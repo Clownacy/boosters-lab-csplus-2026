@@ -155,12 +155,12 @@ public class MapInfo implements Changeable {
 
 		File pxa = new File(directory + "/Stage/" + d.getTileset() + ".pxa"); //$NON-NLS-1$ //$NON-NLS-2$
 		pxaFile = ResourceManager.checkBase(pxa);
-		if (EditorApp.EDITOR_MODE != 0) {
+		if (EditorApp.EDITOR_MODE != 0 || exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
 			int tilesetW = iMan.getImgW(tileset) / getConfig().getTileSize();
 			int tilesetH = iMan.getImgH(tileset) / getConfig().getTileSize();
 			iMan.addPxa(pxaFile, tilesetW * tilesetH);
 		} else {
-			iMan.addPxa(pxaFile, exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024 ? 65536 : 256);
+			iMan.addPxa(pxaFile, 256);
 		}
 
 		loadMap(d);
@@ -1454,12 +1454,12 @@ public class MapInfo implements Changeable {
 		pxaFile = pxaFile2;
 		tileset = tileFile;
 		iMan.addImage(tileFile, 1);
-		if (EditorApp.EDITOR_MODE != 0) {
+		if (EditorApp.EDITOR_MODE != 0 || exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
 			int tilesetW = iMan.getImgW(tileset) / getConfig().getTileSize();
 			int tilesetH = iMan.getImgH(tileset) / getConfig().getTileSize();
 			iMan.addPxa(pxaFile, tilesetW * tilesetH);
 		} else {
-			iMan.addPxa(pxaFile, exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024 ? 65536 : 256);
+			iMan.addPxa(pxaFile, 256);
 		}
 	}
 
