@@ -106,29 +106,34 @@ public class BlConfig {
 		return encoding;
 	}
 
+	private String stripSetting(String setting)
+	{
+		return setting.substring(0, setting.indexOf(' '));
+	}
+
 	public void set(String[] vals) {
 		if (vals.length >= 6) {
-			lineResolution = Integer.parseInt(vals[0]);
-			entityResolution = Integer.parseInt(vals[1]);
-			tileSize = Integer.parseInt(vals[2]);
-			tilesetWidth = Integer.parseInt(vals[3]);
-			mapMinX = Integer.parseInt(vals[4]);
-			mapMinY = Integer.parseInt(vals[5]);
+			lineResolution = Integer.parseInt(stripSetting(vals[0]));
+			entityResolution = Integer.parseInt(stripSetting(vals[1]));
+			tileSize = Integer.parseInt(stripSetting(vals[2]));
+			tilesetWidth = Integer.parseInt(stripSetting(vals[3]));
+			mapMinX = Integer.parseInt(stripSetting(vals[4]));
+			mapMinY = Integer.parseInt(stripSetting(vals[5]));
 		}
 		if (vals.length >= 10) {
-			useScriptSource = Boolean.parseBoolean(vals[6]);
-			tilesetPrefix = vals[7];
-			npcPrefix = vals[8];
-			backgroundPrefix = vals[9];
+			useScriptSource = Boolean.parseBoolean(stripSetting(vals[6]));
+			tilesetPrefix = stripSetting(vals[7]);
+			npcPrefix = stripSetting(vals[8]);
+			backgroundPrefix = stripSetting(vals[9]);
 		}
 		if (vals.length >= 11) {
-			gradientLayerAlpha = Integer.parseInt(vals[10]);
+			gradientLayerAlpha = Integer.parseInt(stripSetting(vals[10]));
 		}
 		if (vals.length >= 12) {
-			encoding = vals[11];
+			encoding = stripSetting(vals[11]);
 		}
 		if (vals.length >= 13) {
-			imageExtension = vals[12];
+			imageExtension = stripSetting(vals[12]);
 		}
 	}
 
