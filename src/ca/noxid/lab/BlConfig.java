@@ -108,7 +108,12 @@ public class BlConfig {
 
 	private String stripSetting(String setting)
 	{
-		return setting.substring(0, setting.indexOf(' '));
+		int separator = setting.indexOf(' ');
+
+		if (separator == -1)
+			return setting;
+
+		return setting.substring(0, separator);
 	}
 
 	public void set(String[] vals) {
@@ -142,8 +147,11 @@ public class BlConfig {
 		if (type == GameInfo.MOD_TYPE.MOD_CS) {
 			tileSize = 16;
 		} else if (type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+			// Double resolution // TODO: Arbitrary resolutions
 			tileSize = 32;
 			entityResolution = 32;
+			// Widescreen
+			mapMinX = 28;
 		}
 		if (configFile.exists()) {
 			ArrayList<String> configValues = new ArrayList<>();
