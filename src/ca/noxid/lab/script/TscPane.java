@@ -151,22 +151,22 @@ public class TscPane extends JTextPane implements ActionListener, Changeable {
 
 				switch (choice) {
 				case JOptionPane.YES_OPTION: //use scriptsource
-					tabText = parseScript(srcFile, encoding);
+					tabText = parseScript(srcFile, encoding, exeDat.type);
 					break;
 				case JOptionPane.NO_OPTION: //use tsc
-					tabText = parseScript(scriptFile, encoding);
+					tabText = parseScript(scriptFile, encoding, exeDat.type);
 					break;
 				default: //compare
 					CompareScriptDialog csd = new CompareScriptDialog(srcFile, scriptFile);
-					tabText = parseScript(csd.getSelection(), encoding);
+					tabText = parseScript(csd.getSelection(), encoding, exeDat.type);
 				}
 			} else {
 				//source file is newer
-				tabText = parseScript(srcFile, encoding);
+				tabText = parseScript(srcFile, encoding, exeDat.type);
 			}
 		} else {
 			// no source file
-			tabText = parseScript(scriptFile, encoding);
+			tabText = parseScript(scriptFile, encoding, exeDat.type);
 		}
 		this.setText(tabText);
 	}
@@ -190,7 +190,7 @@ public class TscPane extends JTextPane implements ActionListener, Changeable {
 
 			JPanel left = new JPanel();
 			left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
-			String opt1 = parseScript(srcFile, exeDat.getConfig().getEncoding());
+			String opt1 = parseScript(srcFile, exeDat.getConfig().getEncoding(), exeDat.type);
 			JTextPane sourcePane = new JTextPane();
 			sourcePane.setText(opt1);
 			sourcePane.setEditable(false);
@@ -211,7 +211,7 @@ public class TscPane extends JTextPane implements ActionListener, Changeable {
 			button.setText("Use ScriptSource version");
 			left.add(button);
 
-			String opt2 = parseScript(scriptFile, exeDat.getConfig().getEncoding());
+			String opt2 = parseScript(scriptFile, exeDat.getConfig().getEncoding(), exeDat.type);
 			JPanel right = new JPanel();
 			right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
 			sourcePane = new JTextPane();
@@ -863,7 +863,7 @@ public class TscPane extends JTextPane implements ActionListener, Changeable {
 	}
 
 
-	public static String parseScript(File scriptFile, String encoding) {
+	public static String parseScript(File scriptFile, String encoding, GameInfo.MOD_TYPE format) {
 		FileChannel inChan;
 		ByteBuffer dataBuf = null;
 		int fileSize = 0;
@@ -884,24 +884,25 @@ public class TscPane extends JTextPane implements ActionListener, Changeable {
 			//e.printStackTrace();
 		}
 
-		byte[] datArray = null;
+		String finalText = Messages.getString("TscPane.34"); //$NON-NLS-1$
 		if (fileSize > 0) {
-			int cypher = dataBuf.get(fileSize / 2);
-			datArray = dataBuf.array();
-			if (scriptFile.getName().endsWith(".tsc")) { //$NON-NLS-1$
-				for (int i = 0; i < fileSize; i++) {
-					if (i != fileSize / 2) {
-						datArray[i] -= cypher;
+			byte[] datArray = dataBuf.array();
+
+			// CS+2024 has unencrypted scripts.
+			if (format != GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+				int cypher = dataBuf.get(fileSize / 2);
+				if (scriptFile.getName().endsWith(".tsc")) { //$NON-NLS-1$
+					for (int i = 0; i < fileSize; i++) {
+						if (i != fileSize / 2) {
+							datArray[i] -= cypher;
+						}
 					}
 				}
 			}
-		}
 
-		//now read the input as a text
-		String finalText = Messages.getString("TscPane.34"); //$NON-NLS-1$
-		if (datArray != null)
-		//saveRawCharData(datArray, scriptFile);
-		{
+			//now read the input as a text
+			//saveRawCharData(datArray, scriptFile);
+
 			try {
 				finalText = new String(datArray, encoding);
 			} catch (UnsupportedEncodingException e) {
@@ -962,12 +963,15 @@ public class TscPane extends JTextPane implements ActionListener, Changeable {
 			}
 			byte[] stripArr = strippedScript.getBytes(exeDat.getConfig().getEncoding());
 			int fileSize = stripArr.length;
-			if (fileSize > 0) {
-				int cypher = stripArr[fileSize / 2];
-				if (scriptFile.getName().endsWith(".tsc")) { //$NON-NLS-1$
-					for (int i = 0; i < fileSize; i++) {
-						if (i != fileSize / 2) {
-							stripArr[i] += cypher;
+			// CS+2024 has unencrypted scripts.
+			if (exeDat.type != GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+				if (fileSize > 0) {
+					int cypher = stripArr[fileSize / 2];
+					if (scriptFile.getName().endsWith(".tsc")) { //$NON-NLS-1$
+						for (int i = 0; i < fileSize; i++) {
+							if (i != fileSize / 2) {
+								stripArr[i] += cypher;
+							}
 						}
 					}
 				}
@@ -992,7 +996,7 @@ public class TscPane extends JTextPane implements ActionListener, Changeable {
 	 * @param text contents to write
 	 * @param dest destination file
 	 */
-	public static void SaveTsc(String text, File dest) {
+	public static void SaveTsc(String text, File dest, GameInfo.MOD_TYPE format) {
 		try {
 			//save script
 			//replace things
@@ -1022,12 +1026,15 @@ public class TscPane extends JTextPane implements ActionListener, Changeable {
 			}
 			byte[] stripArr = strippedScript.getBytes();
 			int fileSize = stripArr.length;
-			if (fileSize > 0) {
-				int cypher = stripArr[fileSize / 2];
-				if (dest.getName().endsWith(".tsc")) { //$NON-NLS-1$
-					for (int i = 0; i < fileSize; i++) {
-						if (i != fileSize / 2) {
-							stripArr[i] += cypher;
+			// CS+2024 has unencrypted scripts.
+			if (format != GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+				if (fileSize > 0) {
+					int cypher = stripArr[fileSize / 2];
+					if (dest.getName().endsWith(".tsc")) { //$NON-NLS-1$
+						for (int i = 0; i < fileSize; i++) {
+							if (i != fileSize / 2) {
+								stripArr[i] += cypher;
+							}
 						}
 					}
 				}

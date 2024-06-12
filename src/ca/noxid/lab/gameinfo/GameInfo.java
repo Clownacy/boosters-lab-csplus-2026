@@ -1244,7 +1244,7 @@ public class GameInfo {
 				continue;
 			//parse the file
 			TscLexer tLex = new TscLexer();
-			tLex.reset(new StringReader(TscPane.parseScript(sourceFile, gameConfig.getEncoding())), 0, -1, 0);
+			tLex.reset(new StringReader(TscPane.parseScript(sourceFile, gameConfig.getEncoding(), type)), 0, -1, 0);
 			TscToken t;
 			int currentEvent = 0;
 			while ((t = tLex.getNextToken()) != null)
@@ -1350,7 +1350,7 @@ public class GameInfo {
 				continue;
 			//parse the file
 			TscLexer tLex = new TscLexer();
-			tLex.reset(new StringReader(TscPane.parseScript(sourceFile, gameConfig.getEncoding())), 0, -1, 0);
+			tLex.reset(new StringReader(TscPane.parseScript(sourceFile, gameConfig.getEncoding(), type)), 0, -1, 0);
 			TscToken t;
 			int currentEvent = 0;
 			while ((t = tLex.getNextToken()) != null)
@@ -1437,9 +1437,9 @@ public class GameInfo {
 			String fileContents;
 			try {
 				if (sourceFile.exists()) {
-					fileContents = TscPane.parseScript(sourceFile, gameConfig.getEncoding());
+					fileContents = TscPane.parseScript(sourceFile, gameConfig.getEncoding(), type);
 				} else {
-					fileContents = TscPane.parseScript(scriptFile, gameConfig.getEncoding());
+					fileContents = TscPane.parseScript(scriptFile, gameConfig.getEncoding(), type);
 				}
 				boolean modified = false;
 				for (int i = 0; i < oldNums.size(); i++) {
@@ -1468,7 +1468,7 @@ public class GameInfo {
 					out.close();
 					
 					//save the TSC
-					TscPane.SaveTsc(fileContents, scriptFile);
+					TscPane.SaveTsc(fileContents, scriptFile, type);
 				}
 			} catch (IOException err) {
 				err.printStackTrace();
