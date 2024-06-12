@@ -160,7 +160,7 @@ public class MapInfo implements Changeable {
 			int tilesetH = iMan.getImgH(tileset) / getConfig().getTileSize();
 			iMan.addPxa(pxaFile, tilesetW * tilesetH);
 		} else {
-			iMan.addPxa(pxaFile, 256);
+			iMan.addPxa(pxaFile, exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024 ? 65536 : 256);
 		}
 
 		loadMap(d);
@@ -205,25 +205,35 @@ public class MapInfo implements Changeable {
 
 			FileInputStream inStream = new FileInputStream(currentFile);
 			FileChannel inChan = inStream.getChannel();
-			ByteBuffer hBuf = ByteBuffer.allocate(8);
-			hBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(hBuf);
-			// read the filetag
-			hBuf.flip();
-			byte tagArray[] = new byte[3];
-			hBuf.get(tagArray, 0, 3);
-			if (!(new String(tagArray).equals("PXM"))) { //$NON-NLS-1$
+			String tagArrayString = new String(inStream.readNBytes(3));
+
+			if (tagArrayString.equals("PXM")) { //$NON-NLS-1$
+				// PXM
+				pxmVersion = (byte) inStream.read();
+			} else if (tagArrayString.equals("XPX") && inStream.read() == 'M' && inStream.read() == 0) { //$NON-NLS-1$
+				// XPXM
+				pxmVersion = 0x11;
+				// skip meaningless "parts size" byte
+				inStream.skip(1);
+			} else {
 				inChan.close();
 				inStream.close();
 				throw new IOException(Messages.getString("MapInfo.9")); //$NON-NLS-1$
 			}
-			pxmVersion = hBuf.get();
+			ByteBuffer hBuf = ByteBuffer.allocate(4);
+			hBuf.order(ByteOrder.LITTLE_ENDIAN);
+			inChan.read(hBuf);
+			// read the filetag
+			hBuf.flip();
 			mapX = hBuf.getShort();
 			mapY = hBuf.getShort();
 
 			switch (pxmVersion) {
 			case 0x10:
 				mapBuf = ByteBuffer.allocate(mapY * mapX);
+				break;
+			case 0x11:
+				mapBuf = ByteBuffer.allocate(mapY * mapX * 2); // shorts
 				break;
 			case 0x20:
 				mapBuf = ByteBuffer.allocate(mapY * mapX * 4);
@@ -287,11 +297,12 @@ public class MapInfo implements Changeable {
 		map = new int[EditorApp.NUM_LAYER][mapY][mapX];
 		switch (pxmVersion) {
 		case 0x10: // original PXM
+		case 0x11: // XPXM
 		// needs pxa file
 		{
 			for (int y = 0; y < mapY; y++)
 				for (int x = 0; x < mapX; x++) {
-					int next = 0xFF & mapBuf.get();
+					int next = pxmVersion == 0x10 ? mapBuf.get() & 0xFF : mapBuf.getShort() & 0xFFFF;
 					if (calcPxa(next) < 0x20)
 						map[1][y][x] = next;
 					else
@@ -1043,6 +1054,7 @@ public class MapInfo implements Changeable {
 		// we can just use our pxaFile field for this, since that's already corrected for CS+
 		//File pxaFile = new File(exeData.getDataDirectory() + "/Stage/" + d.getTileset() + ".pxa"); //$NON-NLS-1$ //$NON-NLS-2$
 		byte[] pxmTag = { 'P', 'X', 'M', 0x10 };
+		byte[] xpxmTag = { 'X', 'P', 'X', 'M', 0, 0x10 };
 		byte[] pxeTag = { 'P', 'X', 'E', 0 };
 		ByteBuffer headerBuf;
 		ByteBuffer mapBuf;
@@ -1053,15 +1065,29 @@ public class MapInfo implements Changeable {
 			FileChannel pxmChannel = out.getChannel();
 			switch (EditorApp.EDITOR_MODE) {
 			case 0: // standard CS editor
-				headerBuf = ByteBuffer.wrap(pxmTag);
+				byte[] tag;
+				int bytesPerTile;
+				if (exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+					tag = xpxmTag;
+					bytesPerTile = 2;
+				} else {
+					tag = pxmTag;
+					bytesPerTile = 1;
+				}
+				headerBuf = ByteBuffer.wrap(tag);
 				pxmChannel.write(headerBuf);
-				mapBuf = ByteBuffer.allocate(mapX * mapY + 4);
+				mapBuf = ByteBuffer.allocate(mapX * mapY * bytesPerTile + 4);
 				mapBuf.order(ByteOrder.LITTLE_ENDIAN);
 				mapBuf.putShort((short) mapX);
 				mapBuf.putShort((short) mapY);
 				for (int y = 0; y < mapY; y++)
 					for (int x = 0; x < mapX; x++) {
-						mapBuf.put((byte) getTile(x, y, -1));
+						int tile = getTile(x, y, -1);
+						if (exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+							mapBuf.putShort((short) tile);
+						} else {
+							mapBuf.put((byte) tile);
+						}
 					}
 				break;
 			case 1: // KS
@@ -1433,7 +1459,7 @@ public class MapInfo implements Changeable {
 			int tilesetH = iMan.getImgH(tileset) / getConfig().getTileSize();
 			iMan.addPxa(pxaFile, tilesetW * tilesetH);
 		} else {
-			iMan.addPxa(pxaFile, 256);
+			iMan.addPxa(pxaFile, exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024 ? 65536 : 256);
 		}
 	}
 

@@ -83,7 +83,7 @@ public class GameInfo {
 	public File getFaceFile() {return faceFile;}
 	public File getItemImageFile() {return itemImageFile;}
 	
-	public enum MOD_TYPE {MOD_CS, MOD_KS, MOD_CS_PLUS, MOD_MR, MOD_GUXT, DUMMY}
+	public enum MOD_TYPE {MOD_CS, MOD_KS, MOD_CS_PLUS_2011, MOD_MR, MOD_GUXT, DUMMY, MOD_CS_PLUS_2024}
 	public MOD_TYPE type;
 	
 	public static final String[] sfxNames = loadSfxNames();
@@ -117,9 +117,15 @@ public class GameInfo {
                 }
 			}
 		} else if (base.toString().endsWith(".tbl")){ //$NON-NLS-1$
-			type = MOD_TYPE.MOD_CS_PLUS;
-			dataDir = base.getParentFile();
-            defaultImageExt = ".bmp";
+			if (true) { // TODO
+				type = MOD_TYPE.MOD_CS_PLUS_2024;
+				dataDir = base.getParentFile();
+				defaultImageExt = ".1.png";
+			} else {
+				type = MOD_TYPE.MOD_CS_PLUS_2011;
+				dataDir = base.getParentFile();
+				defaultImageExt = ".bmp";
+			}
 		} else if (base.toString().endsWith(".bin")) { //$NON-NLS-1$
 			if (base.getName().equals("mrmap.bin")) { //$NON-NLS-1$
 				//moustache
@@ -132,7 +138,7 @@ public class GameInfo {
                 defaultImageExt = ".png";
 			}
 		} else if (base.toString().endsWith(".pxm")) { //$NON-NLS-1$
-			type = MOD_TYPE.MOD_CS_PLUS;
+			type = MOD_TYPE.MOD_CS_PLUS_2011;
 			dataDir = base.getParentFile().getParentFile();
             defaultImageExt = ".bmp";
 		} else if (base.toString().endsWith(".csmap")) { //$NON-NLS-1$
@@ -153,7 +159,7 @@ public class GameInfo {
 		npcSymFile = ResourceManager.checkBase(npcSymFile);
 		itemImageFile = new File(dataDir + "/ItemImage" + imageExtension); //$NON-NLS-1$
 		itemImageFile = ResourceManager.checkBase(itemImageFile);
-		faceFile = new File(dataDir + "/Face" + imageExtension); //$NON-NLS-1$
+		faceFile = new File(dataDir + (type == MOD_TYPE.MOD_CS_PLUS_2024 ? "/Face1" : "/Face") + imageExtension); //$NON-NLS-1$
 		faceFile = ResourceManager.checkBase(faceFile);
 		armsImageFile = new File(dataDir + "/ArmsImage" + imageExtension); //$NON-NLS-1$
 		armsImageFile = ResourceManager.checkBase(armsImageFile);
@@ -880,7 +886,7 @@ public class GameInfo {
 				StrTools.msgBox(Messages.getString("GameInfo.50")); //$NON-NLS-1$
 			}
 		} else {
-			if (type == MOD_TYPE.MOD_CS_PLUS) {
+			if (type == MOD_TYPE.MOD_CS_PLUS_2011 || type == MOD_TYPE.MOD_CS_PLUS_2024) {
 				tblFile = new File(dataDir + "/stage.tbl"); //$NON-NLS-1$
 				mapdataSize = 229;
 			} else if (type == MOD_TYPE.MOD_KS) { //if type == KS
@@ -898,7 +904,7 @@ public class GameInfo {
 				chan = inStream.getChannel();
 				ByteBuffer dBuf;
 				int newPos;
-				if (type == MOD_TYPE.MOD_CS_PLUS) {
+				if (type == MOD_TYPE.MOD_CS_PLUS_2011 || type == MOD_TYPE.MOD_CS_PLUS_2024) {
 					dBuf = ByteBuffer.allocate(mapdataStore.size() * mapdataSize);
 					newPos = map*mapdataSize;
 				} else {

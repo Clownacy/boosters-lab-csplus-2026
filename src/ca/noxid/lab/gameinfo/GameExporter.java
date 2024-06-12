@@ -118,7 +118,8 @@ public class GameExporter {
 				}
 			}
 			break;
-		case MOD_CS_PLUS:
+		case MOD_CS_PLUS_2011:
+		case MOD_CS_PLUS_2024:
 			JOptionPane.showMessageDialog(null, Messages.getString("GameExporter.1")); //$NON-NLS-1$
 			break;
 		case MOD_KS:

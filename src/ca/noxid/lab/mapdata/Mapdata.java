@@ -182,7 +182,8 @@ public class Mapdata implements Changeable {
 			buf.get(buffer, 0, 0x23);
 			mapName = StrTools.CString(buffer, charEncoding);
 			break;
-		case MOD_CS_PLUS: // from stage.tbl
+		case MOD_CS_PLUS_2011: // from stage.tbl
+		case MOD_CS_PLUS_2024: // from stage.tbl
 			/*
 			typedef struct {
 				   char tileset[32];
@@ -279,7 +280,8 @@ public class Mapdata implements Changeable {
 			} catch (UnsupportedEncodingException ignored) {
 			}	
 			break;
-		case MOD_CS_PLUS:
+		case MOD_CS_PLUS_2011:
+		case MOD_CS_PLUS_2024:
 			retVal = ByteBuffer.allocate(229);
 			retVal.order(ByteOrder.LITTLE_ENDIAN);
 			retVal.put(tilesetName.getBytes(charEncoding), 0, tilesetName.length() < 0x20 ? tilesetName.length() : 0x1F);

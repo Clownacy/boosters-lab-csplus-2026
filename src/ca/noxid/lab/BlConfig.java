@@ -136,6 +136,8 @@ public class BlConfig {
 		configFile = solveLegacyDirectory(configFolder);
 		if (type == GameInfo.MOD_TYPE.MOD_CS) {
 			tileSize = 16;
+		} else if (type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+			tileSize = 32;
 		}
 		if (configFile.exists()) {
 			ArrayList<String> configValues = new ArrayList<>();
