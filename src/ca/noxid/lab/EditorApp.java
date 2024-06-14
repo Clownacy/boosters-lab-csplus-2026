@@ -1234,7 +1234,6 @@ public class EditorApp extends JFrame implements ActionListener {
 						}
 						break;
 					case MOD_CS_PLUS_2011:
-					case MOD_CS_PLUS_2024:
 						if (saveAll(false)) {
 							String path = System.getenv("programfiles(x86)"); //$NON-NLS-1$
 							if (path == null) {
@@ -1249,6 +1248,7 @@ public class EditorApp extends JFrame implements ActionListener {
 							}
 						}
 						break;
+					case MOD_CS_PLUS_2024:
 					case MOD_KS:
 						if (saveAll(false)) {
 							exeData.execute();

@@ -97,7 +97,12 @@ public class GameInfo {
 		mapdataStore = new Vector<>();
 		categoryMap = new HashMap<>();
 		String defaultImageExt = ".pbm";
-		if (base.toString().endsWith(".exe")) { //$NON-NLS-1$
+		if (base.toString().endsWith("CaveStory+.exe")) {
+			type = MOD_TYPE.MOD_CS_PLUS_2024;
+			dataDir = new File(base.getParent() + "/data"); //$NON-NLS-1$
+			defaultImageExt = ".1.png"; // TODO: Arbitrary resolutions
+			// We don't set 'executable' since we don't want patching.
+		} else if (base.toString().endsWith(".exe")) { //$NON-NLS-1$
 			dataDir = new File(base.getParent() + "/data"); //$NON-NLS-1$
 			if (dataDir.list(new FileSuffixFilter("stprj")).length > 0) {
 				type = MOD_TYPE.MOD_GUXT;
@@ -117,15 +122,9 @@ public class GameInfo {
                 }
 			}
 		} else if (base.toString().endsWith(".tbl")){ //$NON-NLS-1$
-			if (true) { // TODO
-				type = MOD_TYPE.MOD_CS_PLUS_2024;
-				dataDir = base.getParentFile();
-				defaultImageExt = ".1.png";
-			} else {
-				type = MOD_TYPE.MOD_CS_PLUS_2011;
-				dataDir = base.getParentFile();
-				defaultImageExt = ".bmp";
-			}
+			type = MOD_TYPE.MOD_CS_PLUS_2011;
+			dataDir = base.getParentFile();
+			defaultImageExt = ".bmp";
 		} else if (base.toString().endsWith(".bin")) { //$NON-NLS-1$
 			if (base.getName().equals("mrmap.bin")) { //$NON-NLS-1$
 				//moustache
@@ -807,38 +806,57 @@ public class GameInfo {
 	}
 	
 	private void fillMapdata(File f) throws IOException {
-		FileChannel inChan;
 		String encoding = gameConfig.getEncoding();
-		
-		FileInputStream inStream;
-		inStream = new FileInputStream(f);
-		inChan = inStream.getChannel();
-		
-		if (type == MOD_TYPE.MOD_CS) //$NON-NLS-1$
-		{
-            if (executable == null) {
-        		//standard CS mod, executable failed to initialize
-        		StrTools.msgBox(Messages.getString("GameInfo.47")); //$NON-NLS-1$
-            } else {
-            	//standard CS mod
-                ByteBuffer bb = executable.loadMaps();
-                for (int i = 0; i < executable.getMapdataSize(); i++)
-                    mapdataStore.add(new Mapdata(i, bb, type, encoding));
-            }
-		} else if (f.getName().endsWith("tbl")) { //CS+ type //$NON-NLS-1$
-            //int maps array data
-			int numMaps = (int) (f.length() / 229);
+
+		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
+			// TODO: Split stage.tbl.
+			File stage_tbl = new File(dataDir + "/stage.tbl"); //$NON-NLS-1$
+
+			FileChannel inChan;
+			FileInputStream inStream;
+			inStream = new FileInputStream(stage_tbl);
+			inChan = inStream.getChannel();
+
+			int numMaps = (int) (stage_tbl.length() / 229);
 			ByteBuffer dBuf = ByteBuffer.allocate(numMaps * 229);
 			dBuf.order(ByteOrder.LITTLE_ENDIAN);
 			inChan.read(dBuf);
 			dBuf.flip();
-			
+
 			for (int i = 0; i < numMaps; i++) //for each map
 				mapdataStore.add(new Mapdata(i, dBuf, type, encoding));
 			inChan.close();
 			inStream.close();
-		} else if (f.getName().endsWith(".bin")) { //$NON-NLS-1$
-            // Possibly GIR/Noxid's "MR" engine. Sorry if I broke this with my meddling. - 20kdc
+		} else {
+			FileChannel inChan;
+			FileInputStream inStream;
+			inStream = new FileInputStream(f);
+			inChan = inStream.getChannel();
+
+			if (type == MOD_TYPE.MOD_CS) { //$NON-NLS-1$
+				if (executable == null) {
+					//standard CS mod, executable failed to initialize
+					StrTools.msgBox(Messages.getString("GameInfo.47")); //$NON-NLS-1$
+				} else {
+					//standard CS mod
+					ByteBuffer bb = executable.loadMaps();
+					for (int i = 0; i < executable.getMapdataSize(); i++)
+						mapdataStore.add(new Mapdata(i, bb, type, encoding));
+				}
+			} else if (f.getName().endsWith("tbl")) { //CS+ type //$NON-NLS-1$
+				//int maps array data
+				int numMaps = (int) (f.length() / 229);
+				ByteBuffer dBuf = ByteBuffer.allocate(numMaps * 229);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+
+				for (int i = 0; i < numMaps; i++) //for each map
+					mapdataStore.add(new Mapdata(i, dBuf, type, encoding));
+				inChan.close();
+				inStream.close();
+			} else if (f.getName().endsWith(".bin")) { //$NON-NLS-1$
+				// Possibly GIR/Noxid's "MR" engine. Sorry if I broke this with my meddling. - 20kdc
 			/*
 			typedef struct {
 			    char tileset[16];
@@ -851,18 +869,19 @@ public class GameInfo {
 			    char mapName[34];
 			} MapData; <116>
 			*/
-			ByteBuffer uBuf = ByteBuffer.allocate(4);
-			uBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(uBuf);
-			uBuf.flip();
-			int nMap = uBuf.getInt();
-			ByteBuffer dBuf = ByteBuffer.allocate(nMap*116);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-			//loop
-			for (int i = 0; i < nMap; i++)
-				mapdataStore.add(new Mapdata(i, dBuf, type, encoding));
+				ByteBuffer uBuf = ByteBuffer.allocate(4);
+				uBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(uBuf);
+				uBuf.flip();
+				int nMap = uBuf.getInt();
+				ByteBuffer dBuf = ByteBuffer.allocate(nMap*116);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+				//loop
+				for (int i = 0; i < nMap; i++)
+					mapdataStore.add(new Mapdata(i, dBuf, type, encoding));
+			}
 		}
 	}
 	
