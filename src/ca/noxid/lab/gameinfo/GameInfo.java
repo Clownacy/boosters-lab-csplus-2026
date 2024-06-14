@@ -809,8 +809,6 @@ public class GameInfo {
 	}
 	
 	private void fillMapdata(File f) throws IOException {
-		String encoding = gameConfig.getEncoding();
-
 		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
 			for (int i = 0; ; ++i) {
 				try {
@@ -823,15 +821,16 @@ public class GameInfo {
 					String npcSet1 = Files.readString(path.resolve("npc.txt")); //$NON-NLS-1$
 					String npcSet2 = Files.readString(path.resolve("boss.txt")); //$NON-NLS-1$
 					int bossNum = Integer.parseInt(Files.readString(path.resolve("boss_no.txt"))); //$NON-NLS-1$
-					byte[] jpName = Files.readString(path.resolve("name.txt")).getBytes(); //$NON-NLS-1$
 					String mapName = Files.readString(path.resolve("e_name.txt")); //$NON-NLS-1$
 
-					mapdataStore.add(new Mapdata(i, tilesetName, fileName, scrollType, bgName, npcSet1, npcSet2, bossNum, jpName, mapName));
+					mapdataStore.add(new Mapdata(i, tilesetName, fileName, scrollType, bgName, npcSet1, npcSet2, bossNum, new byte[0x20], mapName));
 				} catch (IOException e) {
 					break;
 				}
 			}
 		} else {
+			String encoding = gameConfig.getEncoding();
+
 			FileChannel inChan;
 			FileInputStream inStream;
 			inStream = new FileInputStream(f);
@@ -897,19 +896,31 @@ public class GameInfo {
 		Mapdata dat = mapdataStore.get(map);
 		if (!dat.isModified())
 			return; //short-circuit
-		File tblFile;
-		FileInputStream inStream = null;
-		FileOutputStream oStream = null;
-		FileChannel chan;
-		int mapdataSize;
-		if (type == MOD_TYPE.MOD_CS) {
+		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
+			Path path = Paths.get(dataDir + "/Stage/" + map); //$NON-NLS-1$
+
+			Files.writeString(path.resolve("parts.txt"), mapdataStore.get(map).getTileset()); //$NON-NLS-1$
+			Files.writeString(path.resolve("map.txt"), mapdataStore.get(map).getFile()); //$NON-NLS-1$
+			Files.writeString(path.resolve("bkType.txt"), Integer.toString(mapdataStore.get(map).getScroll())); //$NON-NLS-1$
+			Files.writeString(path.resolve("back.txt"), mapdataStore.get(map).getBG()); //$NON-NLS-1$
+			Files.writeString(path.resolve("npc.txt"), mapdataStore.get(map).getNPC1()); //$NON-NLS-1$
+			Files.writeString(path.resolve("boss.txt"), mapdataStore.get(map).getNPC2()); //$NON-NLS-1$
+			Files.writeString(path.resolve("boss_no.txt"), Integer.toString(mapdataStore.get(map).getBoss())); //$NON-NLS-1$
+			Files.writeString(path.resolve("e_name.txt"), mapdataStore.get(map).getMapname()); //$NON-NLS-1$
+
+		} else if (type == MOD_TYPE.MOD_CS) {
 			if (executable != null) {
 				executable.saveMap(dat.toBuf(MOD_TYPE.MOD_CS, encoding), dat.getMapnum());
 			} else {
 				StrTools.msgBox(Messages.getString("GameInfo.50")); //$NON-NLS-1$
 			}
 		} else {
-			if (type == MOD_TYPE.MOD_CS_PLUS_2011 || type == MOD_TYPE.MOD_CS_PLUS_2024) {
+			File tblFile;
+			FileInputStream inStream = null;
+			FileOutputStream oStream = null;
+			FileChannel chan;
+			int mapdataSize;
+			if (type == MOD_TYPE.MOD_CS_PLUS_2011) {
 				tblFile = new File(dataDir + "/stage.tbl"); //$NON-NLS-1$
 				mapdataSize = 229;
 			} else if (type == MOD_TYPE.MOD_KS) { //if type == KS
@@ -927,7 +938,7 @@ public class GameInfo {
 				chan = inStream.getChannel();
 				ByteBuffer dBuf;
 				int newPos;
-				if (type == MOD_TYPE.MOD_CS_PLUS_2011 || type == MOD_TYPE.MOD_CS_PLUS_2024) {
+				if (type == MOD_TYPE.MOD_CS_PLUS_2011) {
 					dBuf = ByteBuffer.allocate(mapdataStore.size() * mapdataSize);
 					newPos = map*mapdataSize;
 				} else {
@@ -951,12 +962,12 @@ public class GameInfo {
 				StrTools.msgBox(Messages.getString("GameInfo.53") + tblFile); //$NON-NLS-1$
 				err.printStackTrace();
 			}
+			dat.markUnchanged(); //I may regret doing this early
+			if (inStream != null)
+				inStream.close();
+			if (oStream != null)
+				oStream.close();
 		}
-		dat.markUnchanged(); //I may regret doing this early
-		if (inStream != null)
-			inStream.close();
-		if (oStream != null)
-			oStream.close();
 	}
 	
 	public void exportMapdata(String outFilename, MOD_TYPE format) throws IOException {

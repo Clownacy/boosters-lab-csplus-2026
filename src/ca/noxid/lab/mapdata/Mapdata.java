@@ -294,7 +294,6 @@ public class Mapdata implements Changeable {
 			}	
 			break;
 		case MOD_CS_PLUS_2011:
-		case MOD_CS_PLUS_2024:
 			retVal = ByteBuffer.allocate(229);
 			retVal.order(ByteOrder.LITTLE_ENDIAN);
 			retVal.put(tilesetName.getBytes(charEncoding), 0, tilesetName.length() < 0x20 ? tilesetName.length() : 0x1F);
