@@ -56,7 +56,6 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 		Messages.getString("MapdataPane.16"), //$NON-NLS-1$
 		Messages.getString("MapdataPane.17"), //$NON-NLS-1$
 		Messages.getString("MapdataPane.18"), //$NON-NLS-1$
-		Messages.getString("MapdataPane.19"), //$NON-NLS-1$
 	};
 	
 	public Mapdata getMapdata() {return dat;}
