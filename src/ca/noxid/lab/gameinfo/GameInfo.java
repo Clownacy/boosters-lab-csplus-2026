@@ -818,12 +818,18 @@ public class GameInfo {
 					String fileName = Files.readString(path.resolve("map.txt")); //$NON-NLS-1$
 					int scrollType = Integer.parseInt(Files.readString(path.resolve("bkType.txt"))); //$NON-NLS-1$
 					String bgName = Files.readString(path.resolve("back.txt")); //$NON-NLS-1$
+					String bgWaterName;
+					try {
+						bgWaterName = Files.readString(path.resolve("back_water.txt")); //$NON-NLS-1$
+					} catch (IOException e) {
+						bgWaterName = bgName;
+					}
 					String npcSet1 = Files.readString(path.resolve("npc.txt")); //$NON-NLS-1$
 					String npcSet2 = Files.readString(path.resolve("boss.txt")); //$NON-NLS-1$
 					int bossNum = Integer.parseInt(Files.readString(path.resolve("boss_no.txt"))); //$NON-NLS-1$
 					String mapName = Files.readString(path.resolve("e_name.txt")); //$NON-NLS-1$
 
-					mapdataStore.add(new Mapdata(i, tilesetName, fileName, scrollType, bgName, npcSet1, npcSet2, bossNum, new byte[0x20], mapName));
+					mapdataStore.add(new Mapdata(i, tilesetName, fileName, scrollType, bgName, bgWaterName, npcSet1, npcSet2, bossNum, new byte[0x20], mapName));
 				} catch (IOException e) {
 					break;
 				}
@@ -903,6 +909,7 @@ public class GameInfo {
 			Files.writeString(path.resolve("map.txt"), mapdataStore.get(map).getFile()); //$NON-NLS-1$
 			Files.writeString(path.resolve("bkType.txt"), Integer.toString(mapdataStore.get(map).getScroll())); //$NON-NLS-1$
 			Files.writeString(path.resolve("back.txt"), mapdataStore.get(map).getBG()); //$NON-NLS-1$
+			Files.writeString(path.resolve("back_water.txt"), mapdataStore.get(map).getBGWater()); //$NON-NLS-1$
 			Files.writeString(path.resolve("npc.txt"), mapdataStore.get(map).getNPC1()); //$NON-NLS-1$
 			Files.writeString(path.resolve("boss.txt"), mapdataStore.get(map).getNPC2()); //$NON-NLS-1$
 			Files.writeString(path.resolve("boss_no.txt"), Integer.toString(mapdataStore.get(map).getBoss())); //$NON-NLS-1$

@@ -27,6 +27,7 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 	private JComboBox<String> npcList1;
 	private JComboBox<String> npcList2;
 	private JComboBox<String> background;
+	private JComboBox<String> backgroundWater;
 	private JComboBox<String> bgType;
 	private JComboBox<String> bossType;
 	
@@ -116,6 +117,9 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 		background = new JComboBox<>(i.getBackgrounds());
 		background.setSelectedItem(dat.getBG());
 		background.addActionListener(this);
+		backgroundWater = new JComboBox<>(i.getBackgrounds());
+		backgroundWater.setSelectedItem(dat.getBGWater());
+		backgroundWater.addActionListener(this);
 		bgType = new JComboBox<>(bgTypes);
 		bgType.setSelectedIndex(dat.getScroll());
 		bgType.addActionListener(this);
@@ -138,6 +142,8 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 		c.add(npcList2);
 		c.add(new JLabel(Messages.getString("MapdataPane.28"))); //$NON-NLS-1$
 		c.add(background);
+		c.add(new JLabel(Messages.getString("MapdataPane.34"))); //$NON-NLS-1$
+		c.add(backgroundWater);
 		c.add(new JLabel(Messages.getString("MapdataPane.29"))); //$NON-NLS-1$
 		c.add(bgType);
 		c.add(new JLabel(Messages.getString("MapdataPane.30"))); //$NON-NLS-1$
@@ -193,6 +199,9 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 			} else if (combo == background) {
 				dat.setBG(combo.getSelectedItem().toString());
 				//this.firePropertyChange(P_BGIMG, null, combo.getSelectedItem());
+			} else if (combo == backgroundWater) {
+				dat.setBGWater(combo.getSelectedItem().toString());
+				//this.firePropertyChange(P_BGWATERIMG, null, combo.getSelectedItem());
 			} else if (combo == bgType) {
 				dat.setScroll(combo.getSelectedIndex());
 				//this.firePropertyChange(P_SCROLL, null, combo.getSelectedIndex());	
@@ -211,6 +220,7 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 		dat.setBoss(bossType.getSelectedIndex());
 		dat.setTileset(tilesetList.getSelectedItem().toString().substring(3));
 		dat.setBG(background.getSelectedItem().toString());
+		dat.setBGWater(backgroundWater.getSelectedItem().toString());
 		dat.setScroll(bgType.getSelectedIndex());
 		markUnchanged();
 	}

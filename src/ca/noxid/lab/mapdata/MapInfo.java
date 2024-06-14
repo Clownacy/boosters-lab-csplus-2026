@@ -104,6 +104,12 @@ public class MapInfo implements Changeable {
 		return bgImage;
 	}
 
+	private File bgWaterImage;
+
+	public File getBGWater() {
+		return bgWaterImage;
+	}
+
 	private File npcImage1;
 
 	public File getNpc1() {
@@ -178,6 +184,8 @@ public class MapInfo implements Changeable {
 
 		bgImage = new File(directory + "/" + d.getBG() + exeData.getImgExtension()); //$NON-NLS-1$
 		iMan.addImage(bgImage, 0);
+		bgWaterImage = new File(directory + "/" + d.getBG() + exeData.getImgExtension()); //$NON-NLS-1$
+		iMan.addImage(bgWaterImage, 0);
 		npcImage1 = new File(directory + "/Npc/Npc" + d.getNPC1() + exeData.getImgExtension()); //$NON-NLS-1$
 		iMan.addImage(npcImage1, 1);
 		npcImage2 = new File(directory + "/Npc/Npc" + d.getNPC2() + exeData.getImgExtension()); //$NON-NLS-1$
@@ -1476,6 +1484,11 @@ public class MapInfo implements Changeable {
 	public void setBgImg(File bgFile) {
 		bgImage = bgFile;
 		iMan.addImage(bgFile, 1);
+	}
+
+	public void setBgWaterImg(File bgWaterFile) {
+		bgWaterImage = bgWaterFile;
+		iMan.addImage(bgWaterFile, 1);
 	}
 
 	public void addEdit(UndoableEdit e) {

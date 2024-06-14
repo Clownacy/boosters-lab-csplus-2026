@@ -32,6 +32,7 @@ public class Mapdata implements Changeable {
 	public static final String P_NPC1 = "npc set 1"; //$NON-NLS-1$
 	public static final String P_NPC2 = "npc set 2"; //$NON-NLS-1$
 	public static final String P_BGIMG = "background img"; //$NON-NLS-1$
+	public static final String P_BGWATERIMG = "background water img"; //$NON-NLS-1$
 	public static final String P_SCROLL = "background scroll"; //$NON-NLS-1$
 	public static final String P_BOSS = "boss type"; //$NON-NLS-1$
 	public static final String P_NUM = "map num"; //$NON-NLS-1$
@@ -63,7 +64,7 @@ public class Mapdata implements Changeable {
 		}
 	}
 	public String getFile() {return fileName;}
-	
+
 	private String bgName;
 	public void setBG(String s) {
 		if (!bgName.equals(s) && s != null) {
@@ -74,7 +75,18 @@ public class Mapdata implements Changeable {
 		}
 	}
 	public String getBG() {return bgName;}
-	
+
+	private String bgWaterName;
+	public void setBGWater(String s) {
+		if (!bgWaterName.equals(s) && s != null) {
+			markChanged();
+			String old = bgWaterName;
+			bgWaterName = s;
+			this.firePropertyChange(P_BGWATERIMG, old, s);
+		}
+	}
+	public String getBGWater() {return bgWaterName;}
+
 	private String npcSet1;
 	public void setNPC1(String s) {
 		if (!npcSet1.equals(s) && s != null) {
@@ -150,12 +162,13 @@ public class Mapdata implements Changeable {
 	
 	private boolean changed = false;
 
-	public Mapdata(int num, String tilesetName, String fileName, int scrollType, String bgName, String npcSet1, String npcSet2, int bossNum, byte[] jpName, String mapName) {
+	public Mapdata(int num, String tilesetName, String fileName, int scrollType, String bgName, String bgWaterName, String npcSet1, String npcSet2, int bossNum, byte[] jpName, String mapName) {
 		mapNum = num;
 		this.tilesetName = tilesetName;
 		this.fileName = fileName;
 		this.scrollType = scrollType;
 		this.bgName = bgName;
+		this.bgWaterName = bgWaterName;
 		this.npcSet1 = npcSet1;
 		this.npcSet2 = npcSet2;
 		this.bossNum = bossNum;
@@ -196,7 +209,6 @@ public class Mapdata implements Changeable {
 			mapName = StrTools.CString(buffer, charEncoding);
 			break;
 		case MOD_CS_PLUS_2011: // from stage.tbl
-		case MOD_CS_PLUS_2024: // from stage.tbl
 			/*
 			typedef struct {
 				   char tileset[32];
@@ -261,6 +273,7 @@ public class Mapdata implements Changeable {
 		fileName = "myMap";		 //$NON-NLS-1$
 		scrollType = 0;
 		bgName = "bk0"; //$NON-NLS-1$
+		bgWaterName = ""; //$NON-NLS-1$
 		npcSet1 = "0"; //$NON-NLS-1$
 		npcSet2 = "0"; //$NON-NLS-1$
 		bossNum = 0;
@@ -387,6 +400,7 @@ public class Mapdata implements Changeable {
 	public Mapdata clone() {
 		Mapdata nd = new Mapdata(-1);
 		nd.bgName = this.bgName;
+		nd.bgWaterName = this.bgWaterName;
 		nd.bossNum = this.bossNum;
 		nd.fileName = this.fileName;
 		nd.mapName = this.mapName;

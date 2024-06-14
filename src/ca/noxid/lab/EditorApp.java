@@ -1904,6 +1904,10 @@ public class EditorApp extends JFrame implements ActionListener {
 				File bgFile = new File(
 						exeData.getDataDirectory() + File.separator + eve.getNewValue() + exeData.getImgExtension());
 				data.setBgImg(bgFile);
+			} else if (eve.getPropertyName() == Mapdata.P_BGWATERIMG) {
+				File bgWaterFile = new File(
+						exeData.getDataDirectory() + File.separator + eve.getNewValue() + exeData.getImgExtension());
+				data.setBgWaterImg(bgWaterFile);
 			} else if (eve.getPropertyName() == Mapdata.P_FILE && !data.isTemp) {
 				if (eve.getOldValue() != null) {
 					this.save();
