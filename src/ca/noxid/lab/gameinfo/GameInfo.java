@@ -16,6 +16,9 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -809,24 +812,25 @@ public class GameInfo {
 		String encoding = gameConfig.getEncoding();
 
 		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
-			// TODO: Split stage.tbl.
-			File stage_tbl = new File(dataDir + "/stage.tbl"); //$NON-NLS-1$
+			for (int i = 0; ; ++i) {
+				try {
+					Path path = Paths.get(dataDir + "/Stage/" + i); //$NON-NLS-1$
 
-			FileChannel inChan;
-			FileInputStream inStream;
-			inStream = new FileInputStream(stage_tbl);
-			inChan = inStream.getChannel();
+					String tilesetName = Files.readString(path.resolve("parts.txt")); //$NON-NLS-1$
+					String fileName = Files.readString(path.resolve("map.txt")); //$NON-NLS-1$
+					int scrollType = Integer.parseInt(Files.readString(path.resolve("bkType.txt"))); //$NON-NLS-1$
+					String bgName = Files.readString(path.resolve("back.txt")); //$NON-NLS-1$
+					String npcSet1 = Files.readString(path.resolve("npc.txt")); //$NON-NLS-1$
+					String npcSet2 = Files.readString(path.resolve("boss.txt")); //$NON-NLS-1$
+					int bossNum = Integer.parseInt(Files.readString(path.resolve("boss_no.txt"))); //$NON-NLS-1$
+					byte[] jpName = Files.readString(path.resolve("name.txt")).getBytes(); //$NON-NLS-1$
+					String mapName = Files.readString(path.resolve("e_name.txt")); //$NON-NLS-1$
 
-			int numMaps = (int) (stage_tbl.length() / 229);
-			ByteBuffer dBuf = ByteBuffer.allocate(numMaps * 229);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-
-			for (int i = 0; i < numMaps; i++) //for each map
-				mapdataStore.add(new Mapdata(i, dBuf, type, encoding));
-			inChan.close();
-			inStream.close();
+					mapdataStore.add(new Mapdata(i, tilesetName, fileName, scrollType, bgName, npcSet1, npcSet2, bossNum, jpName, mapName));
+				} catch (IOException e) {
+					break;
+				}
+			}
 		} else {
 			FileChannel inChan;
 			FileInputStream inStream;
