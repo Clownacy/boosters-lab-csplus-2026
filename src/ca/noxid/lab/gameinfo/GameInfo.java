@@ -161,7 +161,7 @@ public class GameInfo {
 		npcSymFile = ResourceManager.checkBase(npcSymFile);
 		itemImageFile = new File(dataDir + "/ItemImage" + imageExtension); //$NON-NLS-1$
 		itemImageFile = ResourceManager.checkBase(itemImageFile);
-		faceFile = new File(dataDir + (type == MOD_TYPE.MOD_CS_PLUS_2024 ? "/Face1" : "/Face") + imageExtension); //$NON-NLS-1$
+		faceFile = new File(dataDir + "/Face" + imageExtension); //$NON-NLS-1$
 		faceFile = ResourceManager.checkBase(faceFile);
 		armsImageFile = new File(dataDir + "/ArmsImage" + imageExtension); //$NON-NLS-1$
 		armsImageFile = ResourceManager.checkBase(armsImageFile);
