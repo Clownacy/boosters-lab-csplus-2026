@@ -141,6 +141,46 @@ public class MapInfo implements Changeable {
 		return exeData.getConfig();
 	}
 
+	private File getStageDirectory(File directory)
+	{
+		return new File(directory, "Stage"); //$NON-NLS-1$
+	}
+
+	private File getMapFile(Mapdata d, File directory, String suffix)
+	{
+		return new File(getStageDirectory(directory), d.getFile() + suffix);
+	}
+
+	private File getPXEFile(Mapdata d, File directory)
+	{
+		return getMapFile(d, directory, ".pxe"); //$NON-NLS-1$
+	}
+
+	private File getPXMFile(Mapdata d, File directory)
+	{
+		return getMapFile(d, directory, ".pxm"); //$NON-NLS-1$
+	}
+
+	private File getNXMFile(Mapdata d, File directory)
+	{
+		return getMapFile(d, directory, ".nxm"); //$NON-NLS-1$
+	}
+
+	private File getTilesetFile(Mapdata d, File directory, String prefix, String suffix)
+	{
+		return new File(getStageDirectory(directory), prefix + d.getTileset() + suffix);
+	}
+
+	private File getPXAFile(Mapdata d, File directory)
+	{
+		return getTilesetFile(d, directory, "", ".pxa"); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
+	private File getTilesetImageFile(Mapdata d, File directory)
+	{
+		return getTilesetFile(d, directory, "Prt", exeData.getImgExtension()); //$NON-NLS-1$
+	}
+
 	public MapInfo(GameInfo eDat, ResourceManager r, int mapNum) {
 		this(eDat, r, eDat.getMapdata(mapNum), false);
 	}
@@ -159,7 +199,7 @@ public class MapInfo implements Changeable {
 
 		loadImageResource(d, directory);
 
-		File pxa = new File(directory + "/Stage/" + d.getTileset() + ".pxa"); //$NON-NLS-1$ //$NON-NLS-2$
+		File pxa = getPXAFile(d, directory);
 		pxaFile = ResourceManager.checkBase(pxa);
 		if (EditorApp.EDITOR_MODE != 0 || exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
 			int tilesetW = iMan.getImgW(tileset) / getConfig().getTileSize();
@@ -179,7 +219,7 @@ public class MapInfo implements Changeable {
 
 	private void loadImageResource(Mapdata d, File directory) {
 		// load each image resource
-		tileset = new File(directory + "/Stage/Prt" + d.getTileset() + exeData.getImgExtension()); //$NON-NLS-1$
+		tileset = getTilesetImageFile(d, directory);
 		iMan.addImage(tileset, 1);
 
 		bgImage = new File(directory + "/" + d.getBG() + exeData.getImgExtension()); //$NON-NLS-1$
@@ -202,9 +242,9 @@ public class MapInfo implements Changeable {
 		try {
 			File currentFile;
 			if (EditorApp.EDITOR_MODE == 2) {
-				currentFile = new File(directory + "/Stage/" + d.getFile() + ".nxm"); //$NON-NLS-1$ //$NON-NLS-2$
+				currentFile = getNXMFile(d, directory);
 			} else {
-				currentFile = new File(directory + "/Stage/" + d.getFile() + ".pxm"); //$NON-NLS-1$ //$NON-NLS-2$
+				currentFile = getPXMFile(d, directory);
 			}
 			currentFile = ResourceManager.checkBase(currentFile);
 
@@ -288,8 +328,7 @@ public class MapInfo implements Changeable {
 			mapBuf.flip();
 
 		} catch (IOException e) {
-			StrTools.msgBox(Messages.getString("MapInfo.10") + directory + "/Stage/" + d.getFile() //$NON-NLS-1$ //$NON-NLS-2$
-					+ ".pxm"); //$NON-NLS-1$
+			StrTools.msgBox(Messages.getString("MapInfo.10") + getPXMFile(d, directory)); //$NON-NLS-1$
 			mapX = 21;
 			mapY = 16;
 			if (EditorApp.EDITOR_MODE == 0) {
@@ -453,7 +492,7 @@ public class MapInfo implements Changeable {
 
 		pxeList = new LinkedList<>();
 		try {
-			File currentFile = new File(directory + "/Stage/" + d.getFile() + ".pxe"); //$NON-NLS-1$ //$NON-NLS-2$
+			File currentFile = getPXEFile(d, directory);
 			currentFile = ResourceManager.checkBase(currentFile);
 			FileInputStream inStream = new FileInputStream(currentFile);
 			FileChannel inChan = inStream.getChannel();
@@ -512,7 +551,7 @@ public class MapInfo implements Changeable {
 			inChan.close();
 			inStream.close();
 		} catch (IOException e) {
-			System.err.println(Messages.getString("MapInfo.16") + directory + "/Stage/" + d.getFile()); //$NON-NLS-1$ //$NON-NLS-2$
+			System.err.println(Messages.getString("MapInfo.16") + getPXEFile(d, directory)); //$NON-NLS-1$
 		}
 	}
 
@@ -1054,13 +1093,13 @@ public class MapInfo implements Changeable {
 			d = exeData.getMapdataTemp(mapNumber);
 		File pxmFile;
 		if (EditorApp.EDITOR_MODE == 2) {
-			pxmFile = new File(exeData.getDataDirectory() + "/Stage/" + d.getFile() + ".nxm"); //$NON-NLS-1$ //$NON-NLS-2$
+			pxmFile = getNXMFile(d, exeData.getDataDirectory());
 		} else {
-			pxmFile = new File(exeData.getDataDirectory() + "/Stage/" + d.getFile() + ".pxm"); //$NON-NLS-1$ //$NON-NLS-2$
+			pxmFile = getPXMFile(d, exeData.getDataDirectory());
 		}
-		File pxeFile = new File(exeData.getDataDirectory() + "/Stage/" + d.getFile() + ".pxe"); //$NON-NLS-1$ //$NON-NLS-2$
+		File pxeFile = getPXEFile(d, exeData.getDataDirectory());
 		// we can just use our pxaFile field for this, since that's already corrected for CS+
-		//File pxaFile = new File(exeData.getDataDirectory() + "/Stage/" + d.getTileset() + ".pxa"); //$NON-NLS-1$ //$NON-NLS-2$
+		//File pxaFile = new File(getPXAPath(d, exeData.getDataDirectory()));
 		byte[] pxmTag = { 'P', 'X', 'M', 0x10 };
 		byte[] xpxmTag = { 'X', 'P', 'X', 'M', 0, 0x10 };
 		byte[] pxeTag = { 'P', 'X', 'E', 0 };
