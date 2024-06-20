@@ -807,12 +807,17 @@ public class GameInfo {
 			}
 		}
 	}
-	
+
+	private Path getSplitStageTablePath(int map)
+	{
+		return Paths.get(dataDir + "/Stage/Table/" + map); //$NON-NLS-1$
+	}
+
 	private void fillMapdata(File f) throws IOException {
 		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
 			for (int i = 0; ; ++i) {
 				try {
-					Path path = Paths.get(dataDir + "/Stage/" + i); //$NON-NLS-1$
+					Path path = getSplitStageTablePath(i);
 
 					String tilesetName = Files.readString(path.resolve("parts.txt")); //$NON-NLS-1$
 					String fileName = Files.readString(path.resolve("map.txt")); //$NON-NLS-1$
@@ -903,7 +908,7 @@ public class GameInfo {
 		if (!dat.isModified())
 			return; //short-circuit
 		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
-			Path path = Paths.get(dataDir + "/Stage/" + map); //$NON-NLS-1$
+			Path path = getSplitStageTablePath(map);
 
 			Files.writeString(path.resolve("parts.txt"), mapdataStore.get(map).getTileset()); //$NON-NLS-1$
 			Files.writeString(path.resolve("map.txt"), mapdataStore.get(map).getFile()); //$NON-NLS-1$
