@@ -832,7 +832,7 @@ public class GameInfo {
 					String npcSet1 = Files.readString(path.resolve("npc.txt")); //$NON-NLS-1$
 					String npcSet2 = Files.readString(path.resolve("boss.txt")); //$NON-NLS-1$
 					int bossNum = Integer.parseInt(Files.readString(path.resolve("boss_no.txt"))); //$NON-NLS-1$
-					String mapName = Files.readString(path.resolve("e_name.txt")); //$NON-NLS-1$
+					String mapName = Files.readString(path.resolve("name.txt")); //$NON-NLS-1$
 
 					mapdataStore.add(new Mapdata(i, tilesetName, fileName, scrollType, bgName, bgWaterName, npcSet1, npcSet2, bossNum, new byte[0x20], mapName));
 				} catch (IOException e) {
@@ -918,7 +918,7 @@ public class GameInfo {
 			Files.writeString(path.resolve("npc.txt"), mapdataStore.get(map).getNPC1()); //$NON-NLS-1$
 			Files.writeString(path.resolve("boss.txt"), mapdataStore.get(map).getNPC2()); //$NON-NLS-1$
 			Files.writeString(path.resolve("boss_no.txt"), Integer.toString(mapdataStore.get(map).getBoss())); //$NON-NLS-1$
-			Files.writeString(path.resolve("e_name.txt"), mapdataStore.get(map).getMapname()); //$NON-NLS-1$
+			Files.writeString(path.resolve("name.txt"), mapdataStore.get(map).getMapname()); //$NON-NLS-1$
 
 		} else if (type == MOD_TYPE.MOD_CS) {
 			if (executable != null) {
