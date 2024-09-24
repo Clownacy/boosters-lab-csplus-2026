@@ -12,6 +12,7 @@ import ca.noxid.lab.script.TscToken;
 import com.carrotlord.string.StrTools;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.awt.*;
 import java.io.*;
@@ -375,7 +376,6 @@ public class GameInfo {
 	private void loadNpcTbl() {
 		try {
 			if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
-
 				ObjectMapper mapper = new ObjectMapper();
 
 				for (int i = 0; i < 1000; ++i) {
@@ -669,108 +669,152 @@ public class GameInfo {
 	
 	
 	public void saveNpcTbl() {
-		File tblFile = new File(dataDir + File.separator + "npc.tbl"); //$NON-NLS-1$
-		int NUM_ENTITY_TYPE = masterEntityList.size();
-		short[] flagDat = new short[NUM_ENTITY_TYPE];
-		short[] healthDat = new short[NUM_ENTITY_TYPE];
-		byte[] tilesetDat = new byte[NUM_ENTITY_TYPE];
-		byte[] deathDat = new byte[NUM_ENTITY_TYPE];
-		byte[] hurtDat = new byte[NUM_ENTITY_TYPE];
-		byte[] sizeDat = new byte[NUM_ENTITY_TYPE];
-		int[] expDat = new int[NUM_ENTITY_TYPE];
-		int[] damageDat = new int[NUM_ENTITY_TYPE];
-		byte[] hitboxDat = new byte[NUM_ENTITY_TYPE*4];
-		byte[] displayDat = new byte[NUM_ENTITY_TYPE*4];
-		for (int i = 0; i < NUM_ENTITY_TYPE; i++) {
-			EntityData e = masterEntityList.get(i);
-			flagDat[i] = (short) e.getFlags();
-			healthDat[i] = (short) e.getHP();
-			tilesetDat[i] = (byte) e.getTileset();
-			deathDat[i] = (byte) e.getDeath();
-			hurtDat[i] = (byte) e.getHurt();
-			sizeDat[i] = (byte) e.getSize();
-			expDat[i] = e.getXP();
-			damageDat[i] = e.getDmg();
-			Rectangle rect = e.getHit();
-			hitboxDat[i*4] = (byte) rect.x;
-			hitboxDat[i*4 + 1] = (byte) rect.y;
-			hitboxDat[i*4 + 2] = (byte) rect.width;
-			hitboxDat[i*4 + 3] = (byte) rect.height;
-			rect = e.getDisplay();
-			displayDat[i*4] = (byte) rect.x;
-			displayDat[i*4 + 1] = (byte) rect.y;
-			displayDat[i*4 + 2] = (byte) rect.width;
-			displayDat[i*4 + 3] = (byte) rect.height;
+		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
+			ObjectMapper mapper = new ObjectMapper();
 
-			
-			e.markUnchanged();
+			for (int i = 0; i < masterEntityList.size(); ++i) {
+				EntityData e = masterEntityList.get(i);
+				ObjectNode rootNode = mapper.createObjectNode();
+				rootNode.put("bits", e.getFlags());
+				rootNode.put("life", e.getHP());
+				rootNode.put("surf", e.getTileset());
+				rootNode.put("destroy_voice", e.getDeath());
+				rootNode.put("hit_voice", e.getHurt());
+				rootNode.put("size", e.getSize());
+				rootNode.put("exp", e.getXP());
+				rootNode.put("damage", e.getDmg());
+
+				Rectangle hit = e.getHit();
+				ObjectNode rectNode = mapper.createObjectNode();
+				rectNode.put("front", hit.x);
+				rectNode.put("top", hit.y);
+				rectNode.put("back", hit.width);
+				rectNode.put("bottom", hit.height);
+				rootNode.set("hit", rectNode);
+
+				Rectangle view = e.getDisplay();
+				ObjectNode viewNode = mapper.createObjectNode();
+				viewNode.put("front", view.x);
+				viewNode.put("top", view.y);
+				viewNode.put("back", view.width);
+				viewNode.put("bottom", view.height);
+				rootNode.set("view", viewNode);
+
+				String thing = dataDir + "/Npc/Table/" + i + "/Metadata.json"; //$NON-NLS-1$ //$NON-NLS-2$
+				File file = ResourceManager.checkBase(new File(thing));
+
+				try {
+					mapper.writerWithDefaultPrettyPrinter().writeValue(file, rootNode);
+				} catch (IOException err) {
+					StrTools.msgBox(Messages.getString("GameInfo.41")); //$NON-NLS-1$
+				}
+
+				e.markUnchanged();
+			}
+		} else {
+			File tblFile = new File(dataDir + File.separator + "npc.tbl"); //$NON-NLS-1$
+			int NUM_ENTITY_TYPE = masterEntityList.size();
+			short[] flagDat = new short[NUM_ENTITY_TYPE];
+			short[] healthDat = new short[NUM_ENTITY_TYPE];
+			byte[] tilesetDat = new byte[NUM_ENTITY_TYPE];
+			byte[] deathDat = new byte[NUM_ENTITY_TYPE];
+			byte[] hurtDat = new byte[NUM_ENTITY_TYPE];
+			byte[] sizeDat = new byte[NUM_ENTITY_TYPE];
+			int[] expDat = new int[NUM_ENTITY_TYPE];
+			int[] damageDat = new int[NUM_ENTITY_TYPE];
+			byte[] hitboxDat = new byte[NUM_ENTITY_TYPE * 4];
+			byte[] displayDat = new byte[NUM_ENTITY_TYPE * 4];
+			for (int i = 0; i < NUM_ENTITY_TYPE; i++) {
+				EntityData e = masterEntityList.get(i);
+				flagDat[i] = (short) e.getFlags();
+				healthDat[i] = (short) e.getHP();
+				tilesetDat[i] = (byte) e.getTileset();
+				deathDat[i] = (byte) e.getDeath();
+				hurtDat[i] = (byte) e.getHurt();
+				sizeDat[i] = (byte) e.getSize();
+				expDat[i] = e.getXP();
+				damageDat[i] = e.getDmg();
+				Rectangle rect = e.getHit();
+				hitboxDat[i * 4] = (byte) rect.x;
+				hitboxDat[i * 4 + 1] = (byte) rect.y;
+				hitboxDat[i * 4 + 2] = (byte) rect.width;
+				hitboxDat[i * 4 + 3] = (byte) rect.height;
+				rect = e.getDisplay();
+				displayDat[i * 4] = (byte) rect.x;
+				displayDat[i * 4 + 1] = (byte) rect.y;
+				displayDat[i * 4 + 2] = (byte) rect.width;
+				displayDat[i * 4 + 3] = (byte) rect.height;
+
+
+				e.markUnchanged();
+			}
+
+			//commit
+			try {
+				FileOutputStream oStream;
+				FileChannel chan;
+
+				oStream = new FileOutputStream(tblFile);
+				chan = oStream.getChannel();
+
+				ByteBuffer buf;
+
+				buf = ByteBuffer.allocate(NUM_ENTITY_TYPE * 2);
+				buf.order(ByteOrder.LITTLE_ENDIAN);
+				for (short s : flagDat) {
+					buf.putShort(s);
+				}
+				buf.flip();
+				chan.write(buf);
+
+				buf = ByteBuffer.allocate(NUM_ENTITY_TYPE * 2);
+				buf.order(ByteOrder.LITTLE_ENDIAN);
+				for (short s : healthDat) {
+					buf.putShort(s);
+				}
+				buf.flip();
+				chan.write(buf);
+
+				buf = ByteBuffer.wrap(tilesetDat);
+				chan.write(buf);
+
+				buf = ByteBuffer.wrap(deathDat);
+				chan.write(buf);
+
+				buf = ByteBuffer.wrap(hurtDat);
+				chan.write(buf);
+
+				buf = ByteBuffer.wrap(sizeDat);
+				chan.write(buf);
+
+				buf = ByteBuffer.allocate(NUM_ENTITY_TYPE * 4);
+				buf.order(ByteOrder.LITTLE_ENDIAN);
+				for (int v : expDat) { //v for value
+					buf.putInt(v);
+				}
+				buf.flip();
+				chan.write(buf);
+
+				buf = ByteBuffer.allocate(NUM_ENTITY_TYPE * 4);
+				buf.order(ByteOrder.LITTLE_ENDIAN);
+				for (int v : damageDat) { //v for value
+					buf.putInt(v);
+				}
+				buf.flip();
+				chan.write(buf);
+
+				buf = ByteBuffer.wrap(hitboxDat);
+				chan.write(buf);
+
+				buf = ByteBuffer.wrap(displayDat);
+				chan.write(buf);
+
+				chan.close();
+				oStream.close();
+			} catch (IOException err) {
+				StrTools.msgBox(Messages.getString("GameInfo.41")); //$NON-NLS-1$
+			}
 		}
-		
-		//commit
-		try {
-			FileOutputStream oStream;
-			FileChannel chan;
-			
-			oStream = new FileOutputStream(tblFile);
-			chan = oStream.getChannel();
-			
-			ByteBuffer buf;
-			
-			buf = ByteBuffer.allocate(NUM_ENTITY_TYPE * 2);
-			buf.order(ByteOrder.LITTLE_ENDIAN);
-			for (short s : flagDat) {
-				buf.putShort(s);
-			}
-			buf.flip();
-			chan.write(buf);
-			
-			buf = ByteBuffer.allocate(NUM_ENTITY_TYPE * 2);
-			buf.order(ByteOrder.LITTLE_ENDIAN);
-			for (short s : healthDat) {
-				buf.putShort(s);
-			}
-			buf.flip();
-			chan.write(buf);
-
-			buf = ByteBuffer.wrap(tilesetDat);
-			chan.write(buf);
-			
-			buf = ByteBuffer.wrap(deathDat);
-			chan.write(buf);
-			
-			buf = ByteBuffer.wrap(hurtDat);
-			chan.write(buf);
-			
-			buf = ByteBuffer.wrap(sizeDat);
-			chan.write(buf);
-
-			buf = ByteBuffer.allocate(NUM_ENTITY_TYPE * 4);
-			buf.order(ByteOrder.LITTLE_ENDIAN);
-			for (int v : expDat) { //v for value
-				buf.putInt(v);
-			}
-			buf.flip();
-			chan.write(buf);
-
-			buf = ByteBuffer.allocate(NUM_ENTITY_TYPE * 4);
-			buf.order(ByteOrder.LITTLE_ENDIAN);
-			for (int v : damageDat) { //v for value
-				buf.putInt(v);
-			}
-			buf.flip();
-			chan.write(buf);
-			
-			buf = ByteBuffer.wrap(hitboxDat);
-			chan.write(buf);
-			
-			buf = ByteBuffer.wrap(displayDat);
-			chan.write(buf);
-			
-			chan.close();
-			oStream.close();
-		} catch (IOException err) {
-			StrTools.msgBox(Messages.getString("GameInfo.41")); //$NON-NLS-1$
-		}		
 		saveEntityInfo();
 	}
 	
