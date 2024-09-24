@@ -10,6 +10,8 @@ import ca.noxid.lab.script.TscLexer;
 import ca.noxid.lab.script.TscPane;
 import ca.noxid.lab.script.TscToken;
 import com.carrotlord.string.StrTools;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.awt.*;
 import java.io.*;
@@ -20,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-
 
 public class GameInfo {
 	//Map list variables
@@ -165,7 +166,7 @@ public class GameInfo {
 		faceFile = ResourceManager.checkBase(faceFile);
 		armsImageFile = new File(dataDir + "/ArmsImage" + imageExtension); //$NON-NLS-1$
 		armsImageFile = ResourceManager.checkBase(armsImageFile);
-		loadNpcTbl(ResourceManager.checkBase(new File(dataDir + "/npc.tbl"))); //$NON-NLS-1$
+		loadNpcTbl();
 	}
 	
 	public static void writeDefaultFiles(File dest) {
@@ -370,165 +371,208 @@ public class GameInfo {
 		}
 		return flist.toArray(new String[flist.size()]);
 	}
-	
-	private void loadNpcTbl(File tblFile) {
-		FileChannel inChan;
-		ByteBuffer dBuf;
-		FileInputStream inStream;
-		int calculated_npcs;
-		
-		if (tblFile == null || !tblFile.exists()) {
-			//generate default npc.tbl
-			try {
-				tblFile = new File(dataDir + File.separator + "npc.tbl"); //$NON-NLS-1$
-				InputStream is = ResourceManager.class.getResourceAsStream("npc.tbl"); //$NON-NLS-1$
-				BufferedOutputStream fs = new BufferedOutputStream(
-						new FileOutputStream(tblFile));
-				int c;
-				while ((c = is.read()) != -1) fs.write(c);
-				fs.close();
-				is.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				return;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	
+
+	private void loadNpcTbl() {
 		try {
-			inStream = new FileInputStream(tblFile);
-			calculated_npcs = (int) (tblFile.length() / 24);
-			inChan = inStream.getChannel();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		short[] flagDat;
-		short[] healthDat;
-		byte[] tilesetDat;
-		byte[] deathDat;
-		byte[] hurtDat;
-		byte[] sizeDat;
-		int[] expDat;
-		int[] damageDat;
-		byte[] hitboxDat;
-		byte[] displayDat;
-		
-		//String[] nameDat = new String[NUM_ENTITY_TYPE];
-		//Rectangle[] frameDat = new Rectangle[NUM_ENTITY_TYPE];
-		try {
-			//read flags section
-			dBuf = ByteBuffer.allocateDirect(2*calculated_npcs);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-			flagDat = new short[calculated_npcs];
-			for (int i = 0; i < flagDat.length; i++) {
-				flagDat[i] = dBuf.getShort();
-			}
-	
-			//read health section
-			dBuf = ByteBuffer.allocate(2*calculated_npcs);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-			healthDat = new short[calculated_npcs];
-			for (int i = 0; i < healthDat.length; i++) {
-				healthDat[i] = dBuf.getShort();
-			}
-	
-			//read tileset section
-			dBuf = ByteBuffer.allocate(calculated_npcs);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-			tilesetDat = dBuf.array();
-	
-			//read death sound section
-			dBuf = ByteBuffer.allocate(calculated_npcs);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-			deathDat = dBuf.array();
-	
-			//read hurt sound section
-			dBuf = ByteBuffer.allocate(calculated_npcs);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-			hurtDat = dBuf.array();
-	
-			//read size section
-			dBuf = ByteBuffer.allocate(calculated_npcs);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-			sizeDat = dBuf.array();
-	
-			//read experience section
-			dBuf = ByteBuffer.allocate(4*calculated_npcs);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-			expDat = new int[calculated_npcs];
-			for (int i = 0; i < expDat.length; i++) {
-				expDat[i] = dBuf.getInt();
-			}
-	
-			//read damage section
-			dBuf = ByteBuffer.allocate(4*calculated_npcs);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-			damageDat = new int[calculated_npcs];
-			for (int i = 0; i < damageDat.length; i++) {
-				damageDat[i] = dBuf.getInt();
-			}
-	
-			//read hitbox section
-			dBuf = ByteBuffer.allocate(4*calculated_npcs);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-			hitboxDat = dBuf.array();
-	
-			//read hitbox section
-			dBuf = ByteBuffer.allocate(4*calculated_npcs);
-			dBuf.order(ByteOrder.LITTLE_ENDIAN);
-			inChan.read(dBuf);
-			dBuf.flip();
-			displayDat = dBuf.array();
-			//finished reading file
-			inChan.close();
-			inStream.close();
-			
-			//build the master list
-			for (int i = 0; i < calculated_npcs; i++) {
-				EntityData e = new EntityData(i, damageDat[i], deathDat[i],
-						expDat[i], flagDat[i], healthDat[i], hurtDat[i],
-						sizeDat[i], tilesetDat[i], 
-						new Rectangle( displayDat[i*4],
-							displayDat[i*4 + 1],
-							displayDat[i*4 + 2],
-							displayDat[i*4 + 3]	),
-						new Rectangle( hitboxDat[i*4],
-							hitboxDat[i*4 + 1],
-							hitboxDat[i*4 + 2],
-							hitboxDat[i*4 + 3] ) );
-				masterEntityList.add(i, e);
-			}
-			
-			/*GROSS NASTY HAcK PLS IGNORE
-			if (calculated_npcs < NUM_ENTITY_TYPE)
-				for (int i = calculated_npcs; i < NUM_ENTITY_TYPE; i++) {
-					EntityData e = new EntityData(i, 0, 0, 0, 0, 10, 0, 1, 1, new Rectangle(8, 8, 8, 8), new Rectangle(4, 4, 4, 4));
-					allCat.addEntity(e, "All");
+			if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
+
+				ObjectMapper mapper = new ObjectMapper();
+
+				for (int i = 0; i < 1000; ++i) {
+					String thing = dataDir + "/Npc/Table/" + i + "/Metadata.json"; //$NON-NLS-1$ //$NON-NLS-2$
+					File file = ResourceManager.checkBase(new File(thing));
+
+					if (!file.exists())
+						break;
+
+					JsonNode npc = mapper.readTree(file);
+
+					JsonNode hit = npc.get("hit"); //$NON-NLS-1$
+					JsonNode view = npc.get("view"); //$NON-NLS-1$
+
+					EntityData e = new EntityData(i,
+							npc.get("damage").asInt(), //$NON-NLS-1$
+							npc.get("destroy_voice").asInt(), //$NON-NLS-1$
+							npc.get("exp").asInt(), //$NON-NLS-1$
+							npc.get("bits").asInt(), //$NON-NLS-1$
+							npc.get("life").asInt(), //$NON-NLS-1$
+							npc.get("hit_voice").asInt(), //$NON-NLS-1$
+							npc.get("size").asInt(), //$NON-NLS-1$
+							npc.get("surf").asInt(), //$NON-NLS-1$
+							new Rectangle(
+									view.get("front").asInt(), //$NON-NLS-1$
+									view.get("top").asInt(), //$NON-NLS-1$
+									view.get("back").asInt(), //$NON-NLS-1$
+									view.get("bottom").asInt() //$NON-NLS-1$
+							),
+							new Rectangle(
+									hit.get("front").asInt(), //$NON-NLS-1$
+									hit.get("top").asInt(), //$NON-NLS-1$
+									hit.get("back").asInt(), //$NON-NLS-1$
+									hit.get("bottom").asInt() //$NON-NLS-1$
+							)
+					);
 					masterEntityList.add(i, e);
 				}
-				*/
-			
+			} else {
+				File tblFile = ResourceManager.checkBase(new File(dataDir + "/npc.tbl")); //$NON-NLS-1$
+
+				FileChannel inChan;
+				ByteBuffer dBuf;
+				FileInputStream inStream;
+				int calculated_npcs;
+
+				if (tblFile == null || !tblFile.exists()) {
+					//generate default npc.tbl
+					try {
+						tblFile = new File(dataDir + File.separator + "npc.tbl"); //$NON-NLS-1$
+						InputStream is = ResourceManager.class.getResourceAsStream("npc.tbl"); //$NON-NLS-1$
+						BufferedOutputStream fs = new BufferedOutputStream(
+								new FileOutputStream(tblFile));
+						int c;
+						while ((c = is.read()) != -1) fs.write(c);
+						fs.close();
+						is.close();
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+						return;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+
+				try {
+					inStream = new FileInputStream(tblFile);
+					calculated_npcs = (int) (tblFile.length() / 24);
+					inChan = inStream.getChannel();
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+					return;
+				}
+
+				short[] flagDat;
+				short[] healthDat;
+				byte[] tilesetDat;
+				byte[] deathDat;
+				byte[] hurtDat;
+				byte[] sizeDat;
+				int[] expDat;
+				int[] damageDat;
+				byte[] hitboxDat;
+				byte[] displayDat;
+
+				//String[] nameDat = new String[NUM_ENTITY_TYPE];
+				//Rectangle[] frameDat = new Rectangle[NUM_ENTITY_TYPE];
+				//read flags section
+				dBuf = ByteBuffer.allocateDirect(2*calculated_npcs);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+				flagDat = new short[calculated_npcs];
+				for (int i = 0; i < flagDat.length; i++) {
+					flagDat[i] = dBuf.getShort();
+				}
+
+				//read health section
+				dBuf = ByteBuffer.allocate(2*calculated_npcs);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+				healthDat = new short[calculated_npcs];
+				for (int i = 0; i < healthDat.length; i++) {
+					healthDat[i] = dBuf.getShort();
+				}
+
+				//read tileset section
+				dBuf = ByteBuffer.allocate(calculated_npcs);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+				tilesetDat = dBuf.array();
+
+				//read death sound section
+				dBuf = ByteBuffer.allocate(calculated_npcs);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+				deathDat = dBuf.array();
+
+				//read hurt sound section
+				dBuf = ByteBuffer.allocate(calculated_npcs);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+				hurtDat = dBuf.array();
+
+				//read size section
+				dBuf = ByteBuffer.allocate(calculated_npcs);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+				sizeDat = dBuf.array();
+
+				//read experience section
+				dBuf = ByteBuffer.allocate(4*calculated_npcs);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+				expDat = new int[calculated_npcs];
+				for (int i = 0; i < expDat.length; i++) {
+					expDat[i] = dBuf.getInt();
+				}
+
+				//read damage section
+				dBuf = ByteBuffer.allocate(4*calculated_npcs);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+				damageDat = new int[calculated_npcs];
+				for (int i = 0; i < damageDat.length; i++) {
+					damageDat[i] = dBuf.getInt();
+				}
+
+				//read hitbox section
+				dBuf = ByteBuffer.allocate(4*calculated_npcs);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+				hitboxDat = dBuf.array();
+
+				//read hitbox section
+				dBuf = ByteBuffer.allocate(4*calculated_npcs);
+				dBuf.order(ByteOrder.LITTLE_ENDIAN);
+				inChan.read(dBuf);
+				dBuf.flip();
+				displayDat = dBuf.array();
+				//finished reading file
+				inChan.close();
+				inStream.close();
+
+				//build the master list
+				for (int i = 0; i < calculated_npcs; i++) {
+					EntityData e = new EntityData(i, damageDat[i], deathDat[i],
+							expDat[i], flagDat[i], healthDat[i], hurtDat[i],
+							sizeDat[i], tilesetDat[i],
+							new Rectangle( displayDat[i*4],
+									displayDat[i*4 + 1],
+									displayDat[i*4 + 2],
+									displayDat[i*4 + 3]	),
+							new Rectangle( hitboxDat[i*4],
+									hitboxDat[i*4 + 1],
+									hitboxDat[i*4 + 2],
+									hitboxDat[i*4 + 3] ) );
+					masterEntityList.add(i, e);
+				}
+
+				/*GROSS NASTY HAcK PLS IGNORE
+				if (calculated_npcs < NUM_ENTITY_TYPE)
+					for (int i = calculated_npcs; i < NUM_ENTITY_TYPE; i++) {
+						EntityData e = new EntityData(i, 0, 0, 0, 0, 10, 0, 1, 1, new Rectangle(8, 8, 8, 8), new Rectangle(4, 4, 4, 4));
+						allCat.addEntity(e, "All");
+						masterEntityList.add(i, e);
+					}
+					*/
+			}
 			
 			//now read supplementary info from metadata file
 			Scanner sc = new Scanner(new File("entityInfo.txt")); //$NON-NLS-1$

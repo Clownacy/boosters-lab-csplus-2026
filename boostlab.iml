@@ -8,5 +8,6 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
+    <orderEntry type="library" name="fasterxml.jackson.core.databind" level="project" />
   </component>
 </module>
