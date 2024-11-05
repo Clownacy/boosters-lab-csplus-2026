@@ -896,33 +896,28 @@ public class GameInfo {
 		}
 	}
 
-	private Path getSplitStageTablePath(int map)
+	private String getSplitStageTablePath(int map)
 	{
-		return Paths.get(dataDir + "/Stage/Table/" + map); //$NON-NLS-1$
+		return dataDir + "/Stage/Table/" + map + '/'; //$NON-NLS-1$
 	}
 
 	private void fillMapdata(File f) throws IOException {
 		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
+			ObjectMapper mapper = new ObjectMapper();
+
 			for (int i = 0; ; ++i) {
 				try {
-					Path path = getSplitStageTablePath(i);
+					String path = getSplitStageTablePath(i);
 
-					String tilesetName = Files.readString(path.resolve("parts.txt")); //$NON-NLS-1$
-					String fileName = Files.readString(path.resolve("map.txt")); //$NON-NLS-1$
-					int scrollType = Integer.parseInt(Files.readString(path.resolve("bkType.txt"))); //$NON-NLS-1$
-					String bgName = Files.readString(path.resolve("back.txt")); //$NON-NLS-1$
-					String bgWaterName;
-					try {
-						bgWaterName = Files.readString(path.resolve("back_water.txt")); //$NON-NLS-1$
-					} catch (IOException e) {
-						bgWaterName = bgName;
-					}
-					String npcSet1 = Files.readString(path.resolve("npc.txt")); //$NON-NLS-1$
-					String npcSet2 = Files.readString(path.resolve("boss.txt")); //$NON-NLS-1$
-					int bossNum = Integer.parseInt(Files.readString(path.resolve("boss_no.txt"))); //$NON-NLS-1$
-					String mapName = Files.readString(path.resolve("name.txt")); //$NON-NLS-1$
+					File file = ResourceManager.checkBase(new File(path + "Metadata.json"));
 
-					mapdataStore.add(new Mapdata(i, tilesetName, fileName, scrollType, bgName, bgWaterName, npcSet1, npcSet2, bossNum, new byte[0x20], mapName));
+					if (!file.exists())
+						break;
+
+					JsonNode stage = mapper.readTree(file);
+					String mapName = Files.readString(Paths.get(path + "name.txt")); //$NON-NLS-1$
+
+					mapdataStore.add(new Mapdata(i, stage.get("parts").asText(), stage.get("map").asText(), stage.get("bkType").asInt(), stage.get("back").asText(), stage.get("back_water").asText(), stage.get("npc").asText(), stage.get("boss").asText(), stage.get("boss_no").asInt(), new byte[0x20], mapName));
 				} catch (IOException e) {
 					break;
 				}
@@ -996,18 +991,32 @@ public class GameInfo {
 		if (!dat.isModified())
 			return; //short-circuit
 		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
-			Path path = getSplitStageTablePath(map);
+			Path path = Paths.get(getSplitStageTablePath(map));
 
-			Files.writeString(path.resolve("parts.txt"), mapdataStore.get(map).getTileset()); //$NON-NLS-1$
-			Files.writeString(path.resolve("map.txt"), mapdataStore.get(map).getFile()); //$NON-NLS-1$
-			Files.writeString(path.resolve("bkType.txt"), Integer.toString(mapdataStore.get(map).getScroll())); //$NON-NLS-1$
-			Files.writeString(path.resolve("back.txt"), mapdataStore.get(map).getBG()); //$NON-NLS-1$
-			Files.writeString(path.resolve("back_water.txt"), mapdataStore.get(map).getBGWater()); //$NON-NLS-1$
-			Files.writeString(path.resolve("npc.txt"), mapdataStore.get(map).getNPC1()); //$NON-NLS-1$
-			Files.writeString(path.resolve("boss.txt"), mapdataStore.get(map).getNPC2()); //$NON-NLS-1$
-			Files.writeString(path.resolve("boss_no.txt"), Integer.toString(mapdataStore.get(map).getBoss())); //$NON-NLS-1$
+			ObjectMapper mapper = new ObjectMapper();
+			ObjectNode rootNode = mapper.createObjectNode();
+
+			Mapdata mapdata = mapdataStore.get(map);
+
+			rootNode.put("parts", mapdata.getTileset());
+			rootNode.put("map", mapdata.getFile());
+			rootNode.put("bkType", Integer.toString(mapdata.getScroll()));
+			rootNode.put("back", mapdata.getBG());
+			rootNode.put("back_water", mapdata.getBGWater());
+			rootNode.put("npc", mapdata.getNPC1());
+			rootNode.put("boss", mapdata.getNPC2());
+			rootNode.put("boss_no", Integer.toString(mapdata.getBoss()));
+
+			String thing = path + "/Metadata.json"; //$NON-NLS-1$
+			File file = ResourceManager.checkBase(new File(thing));
+
+			try {
+				mapper.writerWithDefaultPrettyPrinter().writeValue(file, rootNode);
+			} catch (IOException err) {
+				StrTools.msgBox(Messages.getString("GameInfo.41")); //$NON-NLS-1$
+			}
+
 			Files.writeString(path.resolve("name.txt"), mapdataStore.get(map).getMapname()); //$NON-NLS-1$
-
 		} else if (type == MOD_TYPE.MOD_CS) {
 			if (executable != null) {
 				executable.saveMap(dat.toBuf(MOD_TYPE.MOD_CS, encoding), dat.getMapnum());
