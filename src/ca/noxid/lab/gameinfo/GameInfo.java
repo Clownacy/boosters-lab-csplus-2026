@@ -389,6 +389,8 @@ public class GameInfo {
 
 					JsonNode hit = npc.get("hit"); //$NON-NLS-1$
 					JsonNode view = npc.get("view"); //$NON-NLS-1$
+					JsonNode light = npc.get("light"); //$NON-NLS-1$
+					JsonNode color = light.get("color"); //$NON-NLS-1$
 
 					EntityData e = new EntityData(i,
 							npc.get("damage").asInt(), //$NON-NLS-1$
@@ -410,7 +412,14 @@ public class GameInfo {
 									hit.get("top").asInt(), //$NON-NLS-1$
 									hit.get("back").asInt(), //$NON-NLS-1$
 									hit.get("bottom").asInt() //$NON-NLS-1$
-							)
+							),
+							color.get("red").asInt(),
+							color.get("green").asInt(),
+							color.get("blue").asInt(),
+							color.get("alpha").asInt(),
+							light.get("radius").asInt(),
+							light.get("directional").asBoolean(),
+							light.get("player").asBoolean()
 					);
 					masterEntityList.add(i, e);
 				}
@@ -560,7 +569,14 @@ public class GameInfo {
 							new Rectangle( hitboxDat[i*4],
 									hitboxDat[i*4 + 1],
 									hitboxDat[i*4 + 2],
-									hitboxDat[i*4 + 3] ) );
+									hitboxDat[i*4 + 3] ),
+							0xFF,
+							0xFF,
+							0xFF,
+							0xFF,
+							0,
+							false,
+							false );
 					masterEntityList.add(i, e);
 				}
 
@@ -699,6 +715,20 @@ public class GameInfo {
 				viewNode.put("back", view.width);
 				viewNode.put("bottom", view.height);
 				rootNode.set("view", viewNode);
+
+				ObjectNode lightNode = mapper.createObjectNode();
+
+				ObjectNode colorNode = mapper.createObjectNode();
+				colorNode.put("red", e.getLightColorRed());
+				colorNode.put("green", e.getLightColorGreen());
+				colorNode.put("blue", e.getLightColorBlue());
+				colorNode.put("alpha", e.getLightColorAlpha());
+				lightNode.set("color", colorNode);
+
+				lightNode.put("radius", e.getLightRadius());
+				lightNode.put("directional", e.getLightDirectional());
+				lightNode.put("player", e.getLightPlayer());
+				rootNode.set("light", lightNode);
 
 				String thing = dataDir + "/Npc/Table/" + i + "/Metadata.json"; //$NON-NLS-1$ //$NON-NLS-2$
 				File file = ResourceManager.checkBase(new File(thing));
@@ -909,7 +939,7 @@ public class GameInfo {
 				try {
 					String path = getSplitStageTablePath(i);
 
-					File file = ResourceManager.checkBase(new File(path + "Metadata.json"));
+					File file = ResourceManager.checkBase(new File(path + "Metadata.json")); //$NON-NLS-1$
 
 					if (!file.exists())
 						break;
@@ -998,14 +1028,14 @@ public class GameInfo {
 
 			Mapdata mapdata = mapdataStore.get(map);
 
-			rootNode.put("parts", mapdata.getTileset());
-			rootNode.put("map", mapdata.getFile());
-			rootNode.put("bkType", Integer.toString(mapdata.getScroll()));
-			rootNode.put("back", mapdata.getBG());
-			rootNode.put("back_water", mapdata.getBGWater());
-			rootNode.put("npc", mapdata.getNPC1());
-			rootNode.put("boss", mapdata.getNPC2());
-			rootNode.put("boss_no", Integer.toString(mapdata.getBoss()));
+			rootNode.put("parts", mapdata.getTileset()); //$NON-NLS-1$
+			rootNode.put("map", mapdata.getFile()); //$NON-NLS-1$
+			rootNode.put("bkType", Integer.toString(mapdata.getScroll())); //$NON-NLS-1$
+			rootNode.put("back", mapdata.getBG()); //$NON-NLS-1$
+			rootNode.put("back_water", mapdata.getBGWater()); //$NON-NLS-1$
+			rootNode.put("npc", mapdata.getNPC1()); //$NON-NLS-1$
+			rootNode.put("boss", mapdata.getNPC2()); //$NON-NLS-1$
+			rootNode.put("boss_no", Integer.toString(mapdata.getBoss())); //$NON-NLS-1$
 
 			String thing = path + "/Metadata.json"; //$NON-NLS-1$
 			File file = ResourceManager.checkBase(new File(thing));

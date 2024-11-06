@@ -149,6 +149,62 @@ public class EntityData  implements Changeable{
 			markChanged();
 		}
 	}
+	private int tbl_lightColorRed;
+	public int getLightColorRed() {return tbl_lightColorRed;}
+	public void setLightColorRed(int s) {
+		if (tbl_lightColorRed != s) {
+			tbl_lightColorRed = s;
+			markChanged();
+		}
+	}
+	private int tbl_lightColorGreen;
+	public int getLightColorGreen() {return tbl_lightColorGreen;}
+	public void setLightColorGreen(int s) {
+		if (tbl_lightColorGreen != s) {
+			tbl_lightColorGreen = s;
+			markChanged();
+		}
+	}
+	private int tbl_lightColorBlue;
+	public int getLightColorBlue() {return tbl_lightColorBlue;}
+	public void setLightColorBlue(int s) {
+		if (tbl_lightColorBlue != s) {
+			tbl_lightColorBlue = s;
+			markChanged();
+		}
+	}
+	private int tbl_lightColorAlpha;
+	public int getLightColorAlpha() {return tbl_lightColorAlpha;}
+	public void setLightColorAlpha(int s) {
+		if (tbl_lightColorAlpha != s) {
+			tbl_lightColorAlpha = s;
+			markChanged();
+		}
+	}
+	private int tbl_lightRadius;
+	public int getLightRadius() {return tbl_lightRadius;}
+	public void setLightRadius(int s) {
+		if (tbl_lightRadius != s) {
+			tbl_lightRadius = s;
+			markChanged();
+		}
+	}
+	private boolean tbl_lightDirectional;
+	public boolean getLightDirectional() {return tbl_lightDirectional;}
+	public void setLightDirectional(boolean s) {
+		if (tbl_lightDirectional != s) {
+			tbl_lightDirectional = s;
+			markChanged();
+		}
+	}
+	private boolean tbl_lightPlayer;
+	public boolean getLightPlayer() {return tbl_lightPlayer;}
+	public void setLightPlayer(boolean s) {
+		if (tbl_lightPlayer != s) {
+			tbl_lightPlayer = s;
+			markChanged();
+		}
+	}
 	
 	//for changeable
 	private boolean modified = false;
@@ -165,6 +221,10 @@ public class EntityData  implements Changeable{
 		frameRect = new Rectangle(0,0,0,0);
 		this.tbl_hitbox = new Rectangle(4, 4, 4, 4);
 		this.tbl_display = new Rectangle(8, 8, 8, 8);
+		this.tbl_lightColorRed = 0xFF;
+		this.tbl_lightColorGreen = 0xFF;
+		this.tbl_lightColorBlue = 0xFF;
+		this.tbl_lightColorAlpha = 0xFF;
 		entityNum = num;
 	}
 	
@@ -193,7 +253,8 @@ public class EntityData  implements Changeable{
 		return retVal;
 	}
 	public EntityData(int num, int dam, int deathSound, int exp, int flags, int hp, int hurt,
-			int size, int tileset, Rectangle display, Rectangle hitbox) {
+			int size, int tileset, Rectangle display, Rectangle hitbox, int lightColorRed, int lightColorGreen,
+			int lightColorBlue, int lightColorAlpha, int lightRadius, boolean lightDirectional, boolean lightPlayer) {
 		name = "unnamed"; //$NON-NLS-1$
 		shortName1 = "no"; //$NON-NLS-1$
 		shortName2 = "name"; //$NON-NLS-1$
@@ -209,6 +270,13 @@ public class EntityData  implements Changeable{
 		tbl_tileset = tileset;
 		tbl_display = display;
 		tbl_hitbox = hitbox;
+		tbl_lightColorRed = lightColorRed;
+		tbl_lightColorGreen = lightColorGreen;
+		tbl_lightColorBlue = lightColorBlue;
+		tbl_lightColorAlpha = lightColorAlpha;
+		tbl_lightRadius = lightRadius;
+		tbl_lightDirectional = lightDirectional;
+		tbl_lightPlayer = lightPlayer;
 	}
 	
 	EntityData(String n, int num) {
@@ -233,6 +301,13 @@ public class EntityData  implements Changeable{
 		tbl_tileset = other.tbl_tileset;
 		tbl_display = new Rectangle(other.tbl_display);
 		tbl_hitbox = new Rectangle(other.tbl_hitbox);
+		tbl_lightColorRed = other.tbl_lightColorRed;
+		tbl_lightColorGreen = other.tbl_lightColorGreen;
+		tbl_lightColorBlue = other.tbl_lightColorBlue;
+		tbl_lightColorAlpha = other.tbl_lightColorAlpha;
+		tbl_lightRadius = other.tbl_lightRadius;
+		tbl_lightDirectional = other.tbl_lightDirectional;
+		tbl_lightPlayer = other.tbl_lightPlayer;
 		categories.putAll(other.categories);
 	}
 	
