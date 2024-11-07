@@ -947,7 +947,7 @@ public class GameInfo {
 					JsonNode stage = mapper.readTree(file);
 					String mapName = Files.readString(Paths.get(path + "name.txt")); //$NON-NLS-1$
 
-					mapdataStore.add(new Mapdata(i, stage.get("parts").asText(), stage.get("map").asText(), stage.get("bkType").asInt(), stage.get("back").asText(), stage.get("back_water").asText(), stage.get("npc").asText(), stage.get("boss").asText(), stage.get("boss_no").asInt(), new byte[0x20], mapName));
+					mapdataStore.add(new Mapdata(i, stage.get("parts").asText(), stage.get("map").asText(), stage.get("bkType").asInt(), stage.get("back").asText(), stage.get("back_water").asText(), stage.get("npc").asText(), stage.get("boss").asText(), stage.get("boss_no").asInt(), stage.get("lighting").asText(), new byte[0x20], mapName));
 				} catch (IOException e) {
 					break;
 				}
@@ -1036,6 +1036,7 @@ public class GameInfo {
 			rootNode.put("npc", mapdata.getNPC1()); //$NON-NLS-1$
 			rootNode.put("boss", mapdata.getNPC2()); //$NON-NLS-1$
 			rootNode.put("boss_no", Integer.toString(mapdata.getBoss())); //$NON-NLS-1$
+			rootNode.put("lighting", mapdata.getLighting()); //$NON-NLS-1$
 
 			String thing = path + "/Metadata.json"; //$NON-NLS-1$
 			File file = ResourceManager.checkBase(new File(thing));

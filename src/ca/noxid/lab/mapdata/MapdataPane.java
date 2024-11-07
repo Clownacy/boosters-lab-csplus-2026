@@ -30,7 +30,8 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 	private JComboBox<String> backgroundWater;
 	private JComboBox<String> bgType;
 	private JComboBox<String> bossType;
-	
+	private JComboBox<String> lightingList;
+
 	private boolean shouldWarn;
 	private boolean changed;
 	
@@ -46,7 +47,7 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 		Messages.getString("MapdataPane.8"), //$NON-NLS-1$
 		Messages.getString("MapdataPane.9") //$NON-NLS-1$
 	};
-	
+
 	private static final String[] bgTypes = {
 		Messages.getString("MapdataPane.10"), //$NON-NLS-1$
 		Messages.getString("MapdataPane.11"), //$NON-NLS-1$
@@ -57,6 +58,12 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 		Messages.getString("MapdataPane.16"), //$NON-NLS-1$
 		Messages.getString("MapdataPane.17"), //$NON-NLS-1$
 		Messages.getString("MapdataPane.18"), //$NON-NLS-1$
+	};
+
+	private static final String[] LightingTypes = {
+		Messages.getString("MapdataPane.36"), //$NON-NLS-1$
+		Messages.getString("MapdataPane.37"), //$NON-NLS-1$
+		Messages.getString("MapdataPane.38"), //$NON-NLS-1$
 	};
 	
 	public Mapdata getMapdata() {return dat;}
@@ -126,7 +133,21 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 		bossType = new JComboBox<>(bossList);
 		bossType.setSelectedIndex(dat.getBoss());
 		bossType.addActionListener(this);
-		
+		lightingList = new JComboBox<>(LightingTypes);
+		switch (dat.getLighting())
+		{
+			case "disabled":
+				lightingList.setSelectedIndex(0);
+				break;
+			case "indoors":
+				lightingList.setSelectedIndex(1);
+				break;
+			case "outdoors":
+				lightingList.setSelectedIndex(2);
+				break;
+		}
+		lightingList.addActionListener(this);
+
 		c.setLayout(new GridLayout(0, 2));
 		c.add(new JLabel(Messages.getString("MapdataPane.21"))); //$NON-NLS-1$
 		c.add(new JLabel("")); //$NON-NLS-1$
@@ -148,6 +169,8 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 		c.add(bgType);
 		c.add(new JLabel(Messages.getString("MapdataPane.30"))); //$NON-NLS-1$
 		c.add(bossType);
+		c.add(new JLabel(Messages.getString("MapdataPane.35"))); //$NON-NLS-1$
+		c.add(lightingList);
 	}
 	
 	public boolean allFieldsCommitted() {
@@ -208,6 +231,20 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 			} else if (combo == bossType) {
 				dat.setBoss(combo.getSelectedIndex());
 				//this.firePropertyChange(P_BOSS, null, combo.getSelectedIndex());				
+			} else if (combo == lightingList) {
+				switch (combo.getSelectedIndex())
+				{
+					case 0:
+						dat.setLighting("disabled");
+						break;
+					case 1:
+						dat.setLighting("indoors");
+						break;
+					case 2:
+						dat.setLighting("outdoors");
+						break;
+				};
+				//this.firePropertyChange(P_BOSS, null, combo.getSelectedIndex());
 			}
 		}
 	}

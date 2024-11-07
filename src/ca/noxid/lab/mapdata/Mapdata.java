@@ -35,6 +35,7 @@ public class Mapdata implements Changeable {
 	public static final String P_BGWATERIMG = "background water img"; //$NON-NLS-1$
 	public static final String P_SCROLL = "background scroll"; //$NON-NLS-1$
 	public static final String P_BOSS = "boss type"; //$NON-NLS-1$
+	public static final String P_LIGHTING = "lighting"; //$NON-NLS-1$
 	public static final String P_NUM = "map num"; //$NON-NLS-1$
 	
 	/*
@@ -137,7 +138,7 @@ public class Mapdata implements Changeable {
 		}
 	}
 	public int getScroll() {return scrollType;}
-	
+
 	private int bossNum;
 	public void setBoss(int n) {
 		if (n != bossNum) {
@@ -148,6 +149,17 @@ public class Mapdata implements Changeable {
 		}
 	}
 	public int getBoss() {return bossNum;}
+
+	private String lighting;
+	public void setLighting(String n) {
+		if (n != lighting) {
+			markChanged();
+			String old = lighting;
+			lighting = n;
+			this.firePropertyChange(P_LIGHTING, old, n);
+		}
+	}
+	public String getLighting() {return lighting;}
 	
 	private int mapNum;
 	public void setMapnum(int n) {
@@ -162,7 +174,7 @@ public class Mapdata implements Changeable {
 	
 	private boolean changed = false;
 
-	public Mapdata(int num, String tilesetName, String fileName, int scrollType, String bgName, String bgWaterName, String npcSet1, String npcSet2, int bossNum, byte[] jpName, String mapName) {
+	public Mapdata(int num, String tilesetName, String fileName, int scrollType, String bgName, String bgWaterName, String npcSet1, String npcSet2, int bossNum, String lighting, byte[] jpName, String mapName) {
 		mapNum = num;
 		this.tilesetName = tilesetName;
 		this.fileName = fileName;
@@ -172,6 +184,7 @@ public class Mapdata implements Changeable {
 		this.npcSet1 = npcSet1;
 		this.npcSet2 = npcSet2;
 		this.bossNum = bossNum;
+		this.lighting = lighting;
 		this.jpName = jpName;
 		this.mapName = mapName;
 	}
