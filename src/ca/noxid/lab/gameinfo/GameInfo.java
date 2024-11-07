@@ -1030,12 +1030,12 @@ public class GameInfo {
 
 			rootNode.put("parts", mapdata.getTileset()); //$NON-NLS-1$
 			rootNode.put("map", mapdata.getFile()); //$NON-NLS-1$
-			rootNode.put("bkType", Integer.toString(mapdata.getScroll())); //$NON-NLS-1$
+			rootNode.put("bkType", mapdata.getScroll()); //$NON-NLS-1$
 			rootNode.put("back", mapdata.getBG()); //$NON-NLS-1$
 			rootNode.put("back_water", mapdata.getBGWater()); //$NON-NLS-1$
 			rootNode.put("npc", mapdata.getNPC1()); //$NON-NLS-1$
 			rootNode.put("boss", mapdata.getNPC2()); //$NON-NLS-1$
-			rootNode.put("boss_no", Integer.toString(mapdata.getBoss())); //$NON-NLS-1$
+			rootNode.put("boss_no", mapdata.getBoss()); //$NON-NLS-1$
 			rootNode.put("lighting", mapdata.getLighting()); //$NON-NLS-1$
 
 			String thing = path + "/Metadata.json"; //$NON-NLS-1$
