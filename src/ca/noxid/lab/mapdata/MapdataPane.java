@@ -139,10 +139,10 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 			case "disabled":
 				lightingList.setSelectedIndex(0);
 				break;
-			case "indoors":
+			case "normal":
 				lightingList.setSelectedIndex(1);
 				break;
-			case "outdoors":
+			case "outside":
 				lightingList.setSelectedIndex(2);
 				break;
 		}
@@ -238,10 +238,10 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 						dat.setLighting("disabled");
 						break;
 					case 1:
-						dat.setLighting("indoors");
+						dat.setLighting("normal");
 						break;
 					case 2:
-						dat.setLighting("outdoors");
+						dat.setLighting("outside");
 						break;
 				};
 				//this.firePropertyChange(P_BOSS, null, combo.getSelectedIndex());
