@@ -150,7 +150,7 @@ public class Mapdata implements Changeable {
 	}
 	public int getBoss() {return bossNum;}
 
-	private String lighting;
+	private String lighting = "Disabled";
 	public void setLighting(String n) {
 		if (n != lighting) {
 			markChanged();
