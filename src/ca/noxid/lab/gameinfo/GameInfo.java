@@ -945,9 +945,7 @@ public class GameInfo {
 						break;
 
 					JsonNode stage = mapper.readTree(file);
-					String mapName = Files.readString(Paths.get(path + "name.txt")); //$NON-NLS-1$
-
-					mapdataStore.add(new Mapdata(i, stage.get("parts").asText(), stage.get("map").asText(), stage.get("bkType").asInt(), stage.get("back").asText(), stage.get("back_water").asText(), stage.get("npc").asText(), stage.get("boss").asText(), stage.get("boss_no").asInt(), stage.get("lighting").asText(), new byte[0x20], mapName));
+					mapdataStore.add(new Mapdata(i, stage.get("parts").asText(), stage.get("map").asText(), stage.get("bkType").asInt(), stage.get("back").asText(), stage.get("back_water").asText(), stage.get("npc").asText(), stage.get("boss").asText(), stage.get("boss_no").asInt(), stage.get("lighting").asText(), new byte[0x20], stage.get("name").asText()));
 				} catch (IOException e) {
 					break;
 				}
@@ -1037,6 +1035,7 @@ public class GameInfo {
 			rootNode.put("boss", mapdata.getNPC2()); //$NON-NLS-1$
 			rootNode.put("boss_no", mapdata.getBoss()); //$NON-NLS-1$
 			rootNode.put("lighting", mapdata.getLighting()); //$NON-NLS-1$
+			rootNode.put("name", mapdata.getMapname()); //$NON-NLS-1$
 
 			String thing = path + "/Metadata.json"; //$NON-NLS-1$
 			File file = ResourceManager.checkBase(new File(thing));
@@ -1046,8 +1045,6 @@ public class GameInfo {
 			} catch (IOException err) {
 				StrTools.msgBox(Messages.getString("GameInfo.41")); //$NON-NLS-1$
 			}
-
-			Files.writeString(path.resolve("name.txt"), mapdataStore.get(map).getMapname()); //$NON-NLS-1$
 		} else if (type == MOD_TYPE.MOD_CS) {
 			if (executable != null) {
 				executable.saveMap(dat.toBuf(MOD_TYPE.MOD_CS, encoding), dat.getMapnum());
