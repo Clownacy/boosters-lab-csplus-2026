@@ -36,7 +36,7 @@ Format:
 [command name, starts with <]	[number of arguments]	[parameter types, shown above]	[command name]	[command description] [1 if command ends event, 0 otherwise]	[1 if command clears textbox, 0 otherwise]	[1 if args are seperated, 0 otherwise]	[length of each parameter]
 
 NOTE: If you add a command, make sure to increase the number next to BL_TSC by 1!
-[BL_TSC]	104
+[BL_TSC]	102
 <2MV	1	#---	2P MoVe	Move player to the other player's position. WWW0 - WWW is the number of pixels offset from the player, but default to 1 tile if left at 0. WWW1 - spawn on right side instead of left.	0	0	1	4	4	4	4
 <2PJ	1	e---	2P Jump	Jump to event W if in 2-player mode.	0	0	1	4	4	4	4
 <ACH	1	#---	ACHievement	Unlock achievement W.	0	0	1	4	4	4	4
@@ -47,8 +47,7 @@ NOTE: If you add a command, make sure to increase the number next to BL_TSC by 1
 <ANP	3	N#d-	Animate NPc	Give all entities W scriptstate X and direction Y. Used for animation.	0	0	1	4	4	4	4
 <BOA	1	#---	BOss Action	Give map-boss (eg Omega) scriptstate W	0	0	1	4	4	4	4
 <BSL	1	N---	BoSs Life	Start boss fight with entity W. Use 0000 to end the boss fight.	0	0	1	4	4	4	4
-<CAT	0	----	Clear Auto Turbo	Instantly display text. Use before a <MSG/2/3; works until <END or <CA2. Same command as <SAT.	0	0	1	4	4	4	4
-<CA2	0	----	Clear Auto turbo 2	Counter of <SAT and <CAT: disables the instant displaying of text.	0	0	1	4	4	4	4
+<CAT	0	----	Clear Auto turbo	Counter of <SAT: disables the instant displaying of text.	0	0	1	4	4	4	4
 <CIL	0	----	Cut ILlustration	Clear illustration (during credits).	0	0	1	4	4	4	4
 <CLO	0	----	CLOse	Close message box.	0	0	1	4	4	4	4
 <CLR	0	----	CLeaR	Clear message box.	0	1	1	4	4	4	4
@@ -117,7 +116,7 @@ NOTE: If you add a command, make sure to increase the number next to BL_TSC by 1
 <RFW	0	----	Rapid Fire Weapon	Enable rapid firing of weapons. Normally, this only affects the Polar Star.	0	0	1	4	4	4	4
 <RMU	0	----	Restore MUsic	Resume the song last played.	0	0	1	4	4	4	4
 <RSP	0	----	Reset Secondary Position	Moves all players to the first player's position.	0	0	1	4	4	4	4
-<SAT	0	----	Set Auto Turbo	Instantly display text. Use before a <MSG/2/3; works until <END or <CA2. Same command as <CAT.	0	0	1	4	4	4	4
+<SAT	0	----	Set Auto Turbo	Instantly display text. Use before a <MSG/2/3; works until <END or <CAT.	0	0	1	4	4	4	4
 <SIL	1	l---	Set ILlustration	Show illustration W (during credits).	0	0	1	4	4	4	4
 <SK+	1	F---	SKipflag +	Set skipflag W.	0	0	1	4	4	4	4
 <SK-	1	F---	Skipflag -	Clear skipflag W.	0	0	1	4	4	4	4
