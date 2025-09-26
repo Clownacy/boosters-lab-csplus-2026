@@ -430,11 +430,12 @@ public class TscPane extends JTextPane implements ActionListener, Changeable {
 			break;
 		case 'f': //face
 			try {
+				int faceNum = exeDat.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024 ? argNum % 100 : argNum;
 				float assumedScale = exeDat.getConfig().getTileSize() / 16;
 				ImageIcon face = new ImageIcon(
 						rm.getImg(exeDat.getFaceFile())
-								.getSubimage((int) (48 * assumedScale) * (argNum % 6),
-										(int) (48 * assumedScale) * (argNum / 6),
+								.getSubimage((int) (48 * assumedScale) * (faceNum % 6),
+										(int) (48 * assumedScale) * (faceNum / 6),
 										(int) (48 * assumedScale),
 										(int) (48 * assumedScale)));
 				JLabel label = new JLabel(face);
