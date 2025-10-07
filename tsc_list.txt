@@ -36,7 +36,7 @@ Format:
 [command name, starts with <]	[number of arguments]	[parameter types, shown above]	[command name]	[command description] [1 if command ends event, 0 otherwise]	[1 if command clears textbox, 0 otherwise]	[1 if args are seperated, 0 otherwise]	[length of each parameter]
 
 NOTE: If you add a command, make sure to increase the number next to BL_TSC by 1!
-[BL_TSC]	103
+[BL_TSC]	104
 <2MV	1	#---	2P MoVe	Move player to the other player's position. WWW0 - WWW is the number of pixels offset from the player, but default to 1 tile if left at 0. WWW1 - spawn on right side instead of left.	0	0	1	4	4	4	4
 <2PJ	1	e---	2P Jump	Jump to event W if in 2-player mode.	0	0	1	4	4	4	4
 <ACH	1	#---	ACHievement	Unlock achievement W.	0	0	1	4	4	4	4
@@ -108,6 +108,7 @@ NOTE: If you add a command, make sure to increase the number next to BL_TSC by 1
 <NCJ	2	ne--	Npc Check Jump	Jump to event X if any entity of type W exists.	0	0	1	4	4	4	4
 <NOD	0	----	NOD	Wait for player input before resuming script.	0	0	1	4	4	4	4
 <NUM	1	#---	NUMber	Prints the value [4a5b34+W*4] to the message box. Use 0000 to print the last used W from compatible commands (eg AM+).	0	0	1	4	4	4	4
+<OUT	1	#---	OUTfit	Changes the player's outfit.	0	0	1	4	4	4	4
 <POP	0	----	POP	Pop the read position stack and return to where we were when <PSH was last called.	0	0	1	4	4	4	4
 <PRI	0	----	PRevent Interaction	Lock player controls and freeze game action.	0	0	1	4	4	4	4
 <PSH	1	e---	PuSH	Push the next read position onto a stack and jump to event W, so we can return to our current place later with <POP.	0	0	1	4	4	4	4
