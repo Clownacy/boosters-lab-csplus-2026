@@ -36,7 +36,7 @@ Format:
 [command name, starts with <]	[number of arguments]	[parameter types, shown above]	[command name]	[command description] [1 if command ends event, 0 otherwise]	[1 if command clears textbox, 0 otherwise]	[1 if args are seperated, 0 otherwise]	[length of each parameter]
 
 NOTE: If you add a command, make sure to increase the number next to BL_TSC by 1!
-[BL_TSC]	102
+[BL_TSC]	103
 <2MV	1	#---	2P MoVe	Move player to the other player's position. WWW0 - WWW is the number of pixels offset from the player, but default to 1 tile if left at 0. WWW1 - spawn on right side instead of left.	0	0	1	4	4	4	4
 <2PJ	1	e---	2P Jump	Jump to event W if in 2-player mode.	0	0	1	4	4	4	4
 <ACH	1	#---	ACHievement	Unlock achievement W.	0	0	1	4	4	4	4
@@ -138,5 +138,6 @@ NOTE: If you add a command, make sure to increase the number next to BL_TSC by 1
 <WAI	1	.---	WAIt	Pause script for W ticks.	0	0	1	4	4	4	4
 <WAS	0	----	WAit until Step	Pause script until character is on ground.	0	0	1	4	4	4	4
 <XX1	1	l---	XX1	Show the island falling in manner W. Use 0000 to have it crash and 0001 to have it stop midway.	0	0	1	4	4	4	4
+<XX2	1	#---	XX2	will set TimgFILE.png over the screen. The "tag" for the file name must be exactly 4 characters. Important note in help file	0	0	1	4	4	4	4
 <YNJ	1	e---	Yes/No Jump	Prompt Yes/No; jump to event W if No is selected.	0	0	1	4	4	4	4
 <ZAM	0	----	Zero ArMs	Sets all weapon energy to zero.	0	0	1	4	4	4	4
