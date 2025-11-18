@@ -373,6 +373,24 @@ public class GameInfo {
 		return flist.toArray(new String[flist.size()]);
 	}
 
+	int BITS_BLOCK_MYCHAR	= 0x0001;
+	int BITS_THROW_EBLOCK	= 0x0002;
+	int BITS_BLOCK_BULLET	= 0x0004;
+	int BITS_THROW_BLOCK	= 0x0008;
+	int BITS_BOUND_MYCHAR	= 0x0010;
+	int BITS_BANISH_DAMAGE	= 0x0020;
+	int BITS_BLOCK_MYCHAR2	= 0x0040;
+	int BITS_DAMAGE_SIDE	= 0x0080;
+
+	int BITS_EVENT_HIT		= 0x0100;
+	int BITS_EVENT_BREAK	= 0x0200;
+	int BITS_EVENT_ALIVE	= 0x0400;
+	int BITS_FLAG_ALIVE		= 0x0800;
+	int BITS_DIRECT_RIGHT	= 0x1000;
+	int BITS_EVENT_CHECK	= 0x2000;
+	int BITS_FLAG_DEAD		= 0x4000;
+	int BITS_VIEWDAMAGE		= 0x8000;
+
 	private void loadNpcTbl() {
 		try {
 			if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
@@ -387,16 +405,53 @@ public class GameInfo {
 
 					JsonNode npc = mapper.readTree(file);
 
+					JsonNode bits = npc.get("bits"); //$NON-NLS-1$
 					JsonNode hit = npc.get("hit"); //$NON-NLS-1$
 					JsonNode view = npc.get("view"); //$NON-NLS-1$
 					JsonNode light = npc.get("light"); //$NON-NLS-1$
 					JsonNode color = light.get("color"); //$NON-NLS-1$
 
+					int bits_int = 0;
+
+					if (bits.get("BlockMyChar").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_BLOCK_MYCHAR;
+					if (bits.get("ThrowEBlock").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_THROW_EBLOCK;
+					if (bits.get("BlockBullet").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_BLOCK_BULLET;
+					if (bits.get("ThrowBlock").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_THROW_BLOCK;
+					if (bits.get("BoundMyChar").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_BOUND_MYCHAR;
+					if (bits.get("BanishDamage").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_BANISH_DAMAGE;
+					if (bits.get("BlockMyChar2").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_BLOCK_MYCHAR2;
+					if (bits.get("DamageSide").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_DAMAGE_SIDE;
+
+					if (bits.get("EventHit").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_EVENT_HIT;
+					if (bits.get("EventBreak").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_EVENT_BREAK;
+					if (bits.get("EventAlive").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_EVENT_ALIVE;
+					if (bits.get("FlagAlive").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_FLAG_ALIVE;
+					if (bits.get("DirectRight").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_DIRECT_RIGHT;
+					if (bits.get("EventCheck").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_EVENT_CHECK;
+					if (bits.get("FlagDead").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_FLAG_DEAD;
+					if (bits.get("ViewDamage").asBoolean()) //$NON-NLS-1$
+						bits_int |= BITS_VIEWDAMAGE;
+
 					EntityData e = new EntityData(i,
 							npc.get("damage").asInt(), //$NON-NLS-1$
 							npc.get("destroy_voice").asInt(), //$NON-NLS-1$
 							npc.get("exp").asInt(), //$NON-NLS-1$
-							npc.get("bits").asInt(), //$NON-NLS-1$
+							bits_int,
 							npc.get("life").asInt(), //$NON-NLS-1$
 							npc.get("hit_voice").asInt(), //$NON-NLS-1$
 							npc.get("size").asInt(), //$NON-NLS-1$
@@ -413,13 +468,13 @@ public class GameInfo {
 									hit.get("back").asInt(), //$NON-NLS-1$
 									hit.get("bottom").asInt() //$NON-NLS-1$
 							),
-							color.get("red").asInt(),
-							color.get("green").asInt(),
-							color.get("blue").asInt(),
-							color.get("alpha").asInt(),
-							light.get("radius").asInt(),
-							light.get("directional").asBoolean(),
-							light.get("player").asBoolean()
+							color.get("red").asInt(), //$NON-NLS-1$
+							color.get("green").asInt(), //$NON-NLS-1$
+							color.get("blue").asInt(), //$NON-NLS-1$
+							color.get("alpha").asInt(), //$NON-NLS-1$
+							light.get("radius").asInt(), //$NON-NLS-1$
+							light.get("directional").asBoolean(), //$NON-NLS-1$
+							light.get("player").asBoolean() //$NON-NLS-1$
 					);
 					masterEntityList.add(i, e);
 				}
@@ -691,7 +746,27 @@ public class GameInfo {
 			for (int i = 0; i < masterEntityList.size(); ++i) {
 				EntityData e = masterEntityList.get(i);
 				ObjectNode rootNode = mapper.createObjectNode();
-				rootNode.put("bits", e.getFlags());
+
+				int bits = e.getFlags();
+				ObjectNode bitsNode = mapper.createObjectNode();
+				bitsNode.put("BlockMyChar", (bits & BITS_BLOCK_MYCHAR) != 0);
+				bitsNode.put("ThrowEBlock", (bits & BITS_THROW_EBLOCK) != 0);
+				bitsNode.put("BlockBullet", (bits & BITS_BLOCK_BULLET) != 0);
+				bitsNode.put("ThrowBlock", (bits & BITS_THROW_BLOCK) != 0);
+				bitsNode.put("BoundMyChar", (bits & BITS_BOUND_MYCHAR) != 0);
+				bitsNode.put("BanishDamage", (bits & BITS_BANISH_DAMAGE) != 0);
+				bitsNode.put("BlockMyChar2", (bits & BITS_BLOCK_MYCHAR2) != 0);
+				bitsNode.put("DamageSide", (bits & BITS_DAMAGE_SIDE) != 0);
+				bitsNode.put("EventHit", (bits & BITS_EVENT_HIT) != 0);
+				bitsNode.put("EventBreak", (bits & BITS_EVENT_BREAK) != 0);
+				bitsNode.put("EventAlive", (bits & BITS_EVENT_ALIVE) != 0);
+				bitsNode.put("FlagAlive", (bits & BITS_FLAG_ALIVE) != 0);
+				bitsNode.put("DirectRight", (bits & BITS_DIRECT_RIGHT) != 0);
+				bitsNode.put("EventCheck", (bits & BITS_EVENT_CHECK) != 0);
+				bitsNode.put("FlagDead", (bits & BITS_FLAG_DEAD) != 0);
+				bitsNode.put("ViewDamage", (bits & BITS_VIEWDAMAGE) != 0);
+				rootNode.set("bits", bitsNode);
+
 				rootNode.put("life", e.getHP());
 				rootNode.put("surf", e.getTileset());
 				rootNode.put("destroy_voice", e.getDeath());
