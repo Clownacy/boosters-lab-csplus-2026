@@ -104,11 +104,11 @@ NOTE: If you add a command, make sure to increase the number next to BL_TSC by 1
 <MS3	0	----	MeSsage 3	Open a message box at the top of screen.	0	1	1	4	4	4	4
 <MSG	0	----	MeSsaGe	Open a message box at the bottom of the screen.	0	1	1	4	4	4	4
 <MYB	1	d---	MY Bump	Causes the PC to hop in the direction opposite of W. Using up or down causes the jump to be vertical.	0	0	1	4	4	4	4
+<MYC	1	#---	MY Character	Changes the PC's character.	0	0	1	4	4	4	4
 <MYD	1	d---	MY Direction	Causes the PC to face direction W.	0	0	1	4	4	4	4
 <NCJ	2	ne--	Npc Check Jump	Jump to event X if any entity of type W exists.	0	0	1	4	4	4	4
 <NOD	0	----	NOD	Wait for player input before resuming script.	0	0	1	4	4	4	4
 <NUM	1	#---	NUMber	Prints the value [4a5b34+W*4] to the message box. Use 0000 to print the last used W from compatible commands (eg AM+).	0	0	1	4	4	4	4
-<OUT	1	#---	OUTfit	Changes the player's outfit.	0	0	1	4	4	4	4
 <POP	0	----	POP	Pop the read position stack and return to where we were when <PSH was last called.	0	0	1	4	4	4	4
 <PRI	0	----	PRevent Interaction	Lock player controls and freeze game action.	0	0	1	4	4	4	4
 <PSH	1	e---	PuSH	Push the next read position onto a stack and jump to event W, so we can return to our current place later with <POP.	0	0	1	4	4	4	4
