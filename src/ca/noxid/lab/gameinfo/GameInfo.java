@@ -155,7 +155,7 @@ public class GameInfo {
 		if (".pbm".equals(imageExtension))
 			gameConfig.setImageExtension((imageExtension = defaultImageExt));
 		fillMapdata(base);
-		mycharFile = new File(dataDir + "/MyChar" + imageExtension); //$NON-NLS-1$
+		mycharFile = new File(dataDir + (type == MOD_TYPE.MOD_CS_PLUS_2024 ? "/MyChar/MyChar01" : "/MyChar") + imageExtension); //$NON-NLS-1$
 		mycharFile = ResourceManager.checkBase(mycharFile);
 		npcReguFile = new File(dataDir + "/Npc/NpcRegu" + imageExtension); //$NON-NLS-1$
 		npcReguFile = ResourceManager.checkBase(npcReguFile);
