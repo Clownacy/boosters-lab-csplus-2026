@@ -447,6 +447,248 @@ public class GameInfo {
 					if (bits.get("ViewDamage").asBoolean()) //$NON-NLS-1$
 						bits_int |= BITS_VIEWDAMAGE;
 
+					String surf = npc.get("surf").asText(); //$NON-NLS-1$
+
+					int surf_int = 0;
+
+					switch (surf)
+					{
+						case "SURF_TITLE":
+							surf_int = 0;
+							break;
+						case "SURF_PARTS":
+							surf_int = 2;
+							break;
+						case "SURF_FADE":
+							surf_int = 6;
+							break;
+						case "SURF_ITEMIMAGE":
+							surf_int = 8;
+							break;
+						case "SURF_MINIMAP":
+							surf_int = 9;
+							break;
+						case "SURF_ARMS":
+							surf_int = 11;
+							break;
+						case "SURF_ARMSIMAGE":
+							surf_int = 12;
+							break;
+						case "SURF_STAGEIMAGE":
+							surf_int = 14;
+							break;
+						case "SURF_LOADING":
+							surf_int = 15;
+							break;
+						case "SURF_MYCHAR":
+							surf_int = 16;
+							break;
+						case "SURF_BULLET":
+							surf_int = 17;
+							break;
+
+						case "SURF_CARET":
+							surf_int = 19;
+							break;
+						case "SURF_NPC_SYMBOL":
+							surf_int = 20;
+							break;
+						case "SURF_NPC_ENEMY":
+							surf_int = 21;
+							break;
+						case "SURF_NPC_BOSS":
+							surf_int = 22;
+							break;
+						case "SURF_NPC_REGULAR":
+							surf_int = 23;
+							break;
+						case "SURF_CARET2":
+							surf_int = 24;
+							break;
+						case "SURF_BULLET2":
+							surf_int = 25;
+							break;
+						case "SURF_TEXTBOX":
+							surf_int = 26;
+							break;
+						case "SURF_BACK":
+							surf_int = 28;
+							break;
+						case "SURF_VALUEVIEW":
+							surf_int = 29;
+							break;
+						case "SURF_TEXTSCRIPT":
+							surf_int = 30;
+							break;
+						case "SURF_ILLUST":
+							surf_int = 36;
+							break;
+						case "SURF_CASTS":
+							surf_int = 37;
+							break;
+
+						case "SURF_LIGHT":
+							surf_int = 42;
+							break;
+						case "SURF_LIGHT_DIR":
+							surf_int = 43;
+							break;
+						case "SURF_LIGHTING_SURFACE":
+							surf_int = 44;
+							break;
+						case "SURF_LIGHTING_BACKGROUND":
+							surf_int = 45;
+							break;
+
+						case "SURF_LOGO":
+							surf_int = 46;
+							break;
+						case "SURF_UI":
+							surf_int = 47;
+							break;
+
+						case "SURF_BUTTONS":
+							surf_int = 48;
+							break;
+						case "SURF_UI_MUSIC":
+							surf_int = 49;
+							break;
+
+						case "SURF_BACK2":
+							surf_int = 51;
+							break;
+						case "SURF_FACE1":
+							surf_int = 52;
+							break;
+						case "SURF_FACE2":
+							surf_int = 53;
+							break;
+						case "SURF_FACE3":
+							surf_int = 54;
+							break;
+						case "SURF_FACE4":
+							surf_int = 55;
+							break;
+						case "SURF_FACE5":
+							surf_int = 56;
+							break;
+						case "SURF_FACE6":
+							surf_int = 57;
+							break;
+						case "SURF_FACE7":
+							surf_int = 58;
+							break;
+						case "SURF_FACE8":
+							surf_int = 59;
+							break;
+						case "SURF_FACE9":
+							surf_int = 60;
+							break;
+						case "SURF_NOTIFICATION_ICONS":
+							surf_int = 61;
+							break;
+						case "SURF_KEYS":
+							surf_int = 62;
+							break;
+						case "SURF_XX2":
+							surf_int = 63;
+							break;
+
+						case "SURF_MYCHAR2":
+							surf_int = 64;
+							break;
+						case "SURF_MYCHAR3":
+							surf_int = 65;
+							break;
+						case "SURF_MYCHAR4":
+							surf_int = 66;
+							break;
+						case "SURF_MYCHAR5":
+							surf_int = 67;
+							break;
+						case "SURF_MYCHAR6":
+							surf_int = 68;
+							break;
+						case "SURF_MYCHAR7":
+							surf_int = 69;
+							break;
+						case "SURF_MYCHAR8":
+							surf_int = 70;
+							break;
+						case "SURF_MYCHAR9":
+							surf_int = 71;
+							break;
+						case "SURF_MYCHAR10":
+							surf_int = 72;
+							break;
+						case "SURF_MYCHAR11":
+							surf_int = 73;
+							break;
+						case "SURF_MYCHAR12":
+							surf_int = 74;
+							break;
+						case "SURF_MYCHAR13":
+							surf_int = 75;
+							break;
+						case "SURF_MYCHAR14":
+							surf_int = 76;
+							break;
+						case "SURF_MYCHAR15":
+							surf_int = 77;
+							break;
+						case "SURF_MYCHAR16":
+							surf_int = 78;
+							break;
+						case "SURF_MYCHAR17":
+							surf_int = 79;
+							break;
+						case "SURF_MYCHAR18":
+							surf_int = 80;
+							break;
+						case "SURF_MYCHAR19":
+							surf_int = 81;
+							break;
+						case "SURF_MYCHAR20":
+							surf_int = 82;
+							break;
+						case "SURF_MYCHAR21":
+							surf_int = 83;
+							break;
+						case "SURF_MYCHAR22":
+							surf_int = 84;
+							break;
+						case "SURF_MYCHAR23":
+							surf_int = 85;
+							break;
+						case "SURF_MYCHAR24":
+							surf_int = 86;
+							break;
+						case "SURF_MYCHAR25":
+							surf_int = 87;
+							break;
+						case "SURF_MYCHAR26":
+							surf_int = 88;
+							break;
+						case "SURF_MYCHAR27":
+							surf_int = 89;
+							break;
+						case "SURF_MYCHAR28":
+							surf_int = 90;
+							break;
+						case "SURF_MYCHAR29":
+							surf_int = 91;
+							break;
+						case "SURF_MYCHAR30":
+							surf_int = 92;
+							break;
+						case "SURF_MYCHAR31":
+							surf_int = 93;
+							break;
+						case "SURF_MYCHAR32":
+							surf_int = 94;
+							break;
+					}
+
 					EntityData e = new EntityData(i,
 							npc.get("damage").asInt(), //$NON-NLS-1$
 							npc.get("destroy_voice").asInt(), //$NON-NLS-1$
@@ -455,7 +697,7 @@ public class GameInfo {
 							npc.get("life").asInt(), //$NON-NLS-1$
 							npc.get("hit_voice").asInt(), //$NON-NLS-1$
 							npc.get("size").asInt(), //$NON-NLS-1$
-							npc.get("surf").asInt(), //$NON-NLS-1$
+							surf_int,
 							new Rectangle(
 									view.get("front").asInt(), //$NON-NLS-1$
 									view.get("top").asInt(), //$NON-NLS-1$
@@ -767,8 +1009,250 @@ public class GameInfo {
 				bitsNode.put("ViewDamage", (bits & BITS_VIEWDAMAGE) != 0);
 				rootNode.set("bits", bitsNode);
 
+				String surf_string;
+
+				switch (e.getTileset())
+				{
+					case 0:
+						surf_string = "SURF_TITLE";
+						break;
+					case 2:
+						surf_string = "SURF_PARTS";
+						break;
+					case 6:
+						surf_string = "SURF_FADE";
+						break;
+					case 8:
+						surf_string = "SURF_ITEMIMAGE";
+						break;
+					case 9:
+						surf_string = "SURF_MINIMAP";
+						break;
+					case 11:
+						surf_string = "SURF_ARMS";
+						break;
+					case 12:
+						surf_string = "SURF_ARMSIMAGE";
+						break;
+					case 14:
+						surf_string = "SURF_STAGEIMAGE";
+						break;
+					case 15:
+						surf_string = "SURF_LOADING";
+						break;
+					case 16:
+						surf_string = "SURF_MYCHAR";
+						break;
+					case 17:
+						surf_string = "SURF_BULLET";
+						break;
+
+					case 19:
+						surf_string = "SURF_CARET";
+						break;
+					case 20:
+						surf_string = "SURF_NPC_SYMBOL";
+						break;
+					default:
+					case 21:
+						surf_string = "SURF_NPC_ENEMY";
+						break;
+					case 22:
+						surf_string = "SURF_NPC_BOSS";
+						break;
+					case 23:
+						surf_string = "SURF_NPC_REGULAR";
+						break;
+					case 24:
+						surf_string = "SURF_CARET2";
+						break;
+					case 25:
+						surf_string = "SURF_BULLET2";
+						break;
+					case 26:
+						surf_string = "SURF_TEXTBOX";
+						break;
+					case 28:
+						surf_string = "SURF_BACK";
+						break;
+					case 29:
+						surf_string = "SURF_VALUEVIEW";
+						break;
+					case 30:
+						surf_string = "SURF_TEXTSCRIPT";
+						break;
+					case 36:
+						surf_string = "SURF_ILLUST";
+						break;
+					case 37:
+						surf_string = "SURF_CASTS";
+						break;
+
+					case 42:
+						surf_string = "SURF_LIGHT";
+						break;
+					case 43:
+						surf_string = "SURF_LIGHT_DIR";
+						break;
+					case 44:
+						surf_string = "SURF_LIGHTING_SURFACE";
+						break;
+					case 45:
+						surf_string = "SURF_LIGHTING_BACKGROUND";
+						break;
+
+					case 46:
+						surf_string = "SURF_LOGO";
+						break;
+					case 47:
+						surf_string = "SURF_UI";
+						break;
+
+					case 48:
+						surf_string = "SURF_BUTTONS";
+						break;
+					case 49:
+						surf_string = "SURF_UI_MUSIC";
+						break;
+
+					case 51:
+						surf_string = "SURF_BACK2";
+						break;
+					case 52:
+						surf_string = "SURF_FACE1";
+						break;
+					case 53:
+						surf_string = "SURF_FACE2";
+						break;
+					case 54:
+						surf_string = "SURF_FACE3";
+						break;
+					case 55:
+						surf_string = "SURF_FACE4";
+						break;
+					case 56:
+						surf_string = "SURF_FACE5";
+						break;
+					case 57:
+						surf_string = "SURF_FACE6";
+						break;
+					case 58:
+						surf_string = "SURF_FACE7";
+						break;
+					case 59:
+						surf_string = "SURF_FACE8";
+						break;
+					case 60:
+						surf_string = "SURF_FACE9";
+						break;
+					case 61:
+						surf_string = "SURF_NOTIFICATION_ICONS";
+						break;
+					case 62:
+						surf_string = "SURF_KEYS";
+						break;
+					case 63:
+						surf_string = "SURF_XX2";
+						break;
+
+					case 64:
+						surf_string = "SURF_MYCHAR2";
+						break;
+					case 65:
+						surf_string = "SURF_MYCHAR3";
+						break;
+					case 66:
+						surf_string = "SURF_MYCHAR4";
+						break;
+					case 67:
+						surf_string = "SURF_MYCHAR5";
+						break;
+					case 68:
+						surf_string = "SURF_MYCHAR6";
+						break;
+					case 69:
+						surf_string = "SURF_MYCHAR7";
+						break;
+					case 70:
+						surf_string = "SURF_MYCHAR8";
+						break;
+					case 71:
+						surf_string = "SURF_MYCHAR9";
+						break;
+					case 72:
+						surf_string = "SURF_MYCHAR10";
+						break;
+					case 73:
+						surf_string = "SURF_MYCHAR11";
+						break;
+					case 74:
+						surf_string = "SURF_MYCHAR12";
+						break;
+					case 75:
+						surf_string = "SURF_MYCHAR13";
+						break;
+					case 76:
+						surf_string = "SURF_MYCHAR14";
+						break;
+					case 77:
+						surf_string = "SURF_MYCHAR15";
+						break;
+					case 78:
+						surf_string = "SURF_MYCHAR16";
+						break;
+					case 79:
+						surf_string = "SURF_MYCHAR17";
+						break;
+					case 80:
+						surf_string = "SURF_MYCHAR18";
+						break;
+					case 81:
+						surf_string = "SURF_MYCHAR19";
+						break;
+					case 82:
+						surf_string = "SURF_MYCHAR20";
+						break;
+					case 83:
+						surf_string = "SURF_MYCHAR21";
+						break;
+					case 84:
+						surf_string = "SURF_MYCHAR22";
+						break;
+					case 85:
+						surf_string = "SURF_MYCHAR23";
+						break;
+					case 86:
+						surf_string = "SURF_MYCHAR24";
+						break;
+					case 87:
+						surf_string = "SURF_MYCHAR25";
+						break;
+					case 88:
+						surf_string = "SURF_MYCHAR26";
+						break;
+					case 89:
+						surf_string = "SURF_MYCHAR27";
+						break;
+					case 90:
+						surf_string = "SURF_MYCHAR28";
+						break;
+					case 91:
+						surf_string = "SURF_MYCHAR29";
+						break;
+					case 92:
+						surf_string = "SURF_MYCHAR30";
+						break;
+					case 93:
+						surf_string = "SURF_MYCHAR31";
+						break;
+					case 94:
+						surf_string = "SURF_MYCHAR32";
+						break;
+
+				}
+
 				rootNode.put("life", e.getHP());
-				rootNode.put("surf", e.getTileset());
+				rootNode.put("surf", surf_string);
 				rootNode.put("destroy_voice", e.getDeath());
 				rootNode.put("hit_voice", e.getHurt());
 				rootNode.put("size", e.getSize());
