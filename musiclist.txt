@@ -3,9 +3,9 @@
 0002 Safety
 0003 Game Over
 0004 Gravity
-0005 On To Grasstown
+0005 On To Bushlands
 0006 Meltdown 2
-0007 Eyes of Flame
+0007 Eyes Of Flame
 0008 Gestation
 0009 Mimiga Town
 0010 Get Item!
@@ -27,7 +27,7 @@
 0026 Hero's End
 0027 Scorching Back
 0028 Quiet
-0029 Final Cave
+0029 Last Cave
 0030 Balcony
 0031 Charge
 0032 Last Battle
@@ -39,4 +39,8 @@
 0038 Living Waterway
 0039 Seal Chamber
 0040 Toroko's Theme
-0041 ["White"]
+0041 White
+0042 Wind Fortress
+0043 Last Cave (Hidden)
+0044 Mischievous Robot (Ending)
+0045 Ikachan
