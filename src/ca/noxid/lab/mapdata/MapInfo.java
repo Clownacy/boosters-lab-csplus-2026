@@ -201,7 +201,7 @@ public class MapInfo implements Changeable {
 
 		File pxa = getPXAFile(d, directory);
 		pxaFile = ResourceManager.checkBase(pxa);
-		if (EditorApp.EDITOR_MODE != 0 || exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+		if (EditorApp.EDITOR_MODE != 0 || exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2026) {
 			int tilesetW = iMan.getImgW(tileset) / getConfig().getTileSize();
 			int tilesetH = iMan.getImgH(tileset) / getConfig().getTileSize();
 			iMan.addPxa(pxaFile, tilesetW * tilesetH);
@@ -1114,7 +1114,7 @@ public class MapInfo implements Changeable {
 			case 0: // standard CS editor
 				byte[] tag;
 				int bytesPerTile;
-				if (exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+				if (exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2026) {
 					tag = xpxmTag;
 					bytesPerTile = 2;
 				} else {
@@ -1130,7 +1130,7 @@ public class MapInfo implements Changeable {
 				for (int y = 0; y < mapY; y++)
 					for (int x = 0; x < mapX; x++) {
 						int tile = getTile(x, y, -1);
-						if (exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+						if (exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2026) {
 							mapBuf.putShort((short) tile);
 						} else {
 							mapBuf.put((byte) tile);
@@ -1501,7 +1501,7 @@ public class MapInfo implements Changeable {
 		pxaFile = pxaFile2;
 		tileset = tileFile;
 		iMan.addImage(tileFile, 1);
-		if (EditorApp.EDITOR_MODE != 0 || exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+		if (EditorApp.EDITOR_MODE != 0 || exeData.type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2026) {
 			int tilesetW = iMan.getImgW(tileset) / getConfig().getTileSize();
 			int tilesetH = iMan.getImgH(tileset) / getConfig().getTileSize();
 			iMan.addPxa(pxaFile, tilesetW * tilesetH);

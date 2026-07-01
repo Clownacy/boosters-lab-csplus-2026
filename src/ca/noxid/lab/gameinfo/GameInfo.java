@@ -88,7 +88,7 @@ public class GameInfo {
 	public File getFaceFile() {return faceFile;}
 	public File getItemImageFile() {return itemImageFile;}
 	
-	public enum MOD_TYPE {MOD_CS, MOD_KS, MOD_CS_PLUS_2011, MOD_MR, MOD_GUXT, DUMMY, MOD_CS_PLUS_2024}
+	public enum MOD_TYPE {MOD_CS, MOD_KS, MOD_CS_PLUS_2011, MOD_MR, MOD_GUXT, DUMMY, MOD_CS_PLUS_2026}
 	public MOD_TYPE type;
 	
 	public static final String[] sfxNames = loadSfxNames();
@@ -103,7 +103,7 @@ public class GameInfo {
 		categoryMap = new HashMap<>();
 		String defaultImageExt = ".pbm";
 		if (base.toString().endsWith("CaveStory+.exe")) {
-			type = MOD_TYPE.MOD_CS_PLUS_2024;
+			type = MOD_TYPE.MOD_CS_PLUS_2026;
 			dataDir = new File(base.getParent() + "/data"); //$NON-NLS-1$
 			defaultImageExt = ".1.png"; // TODO: Arbitrary resolutions
 			// We don't set 'executable' since we don't want patching.
@@ -155,7 +155,7 @@ public class GameInfo {
 		if (".pbm".equals(imageExtension))
 			gameConfig.setImageExtension((imageExtension = defaultImageExt));
 		fillMapdata(base);
-		mycharFile = new File(dataDir + (type == MOD_TYPE.MOD_CS_PLUS_2024 ? "/MyChar/MyChar01" : "/MyChar") + imageExtension); //$NON-NLS-1$
+		mycharFile = new File(dataDir + (type == MOD_TYPE.MOD_CS_PLUS_2026 ? "/MyChar/MyChar01" : "/MyChar") + imageExtension); //$NON-NLS-1$
 		mycharFile = ResourceManager.checkBase(mycharFile);
 		npcReguFile = new File(dataDir + "/Npc/NpcRegu" + imageExtension); //$NON-NLS-1$
 		npcReguFile = ResourceManager.checkBase(npcReguFile);
@@ -393,7 +393,7 @@ public class GameInfo {
 
 	private void loadNpcTbl() {
 		try {
-			if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
+			if (type == MOD_TYPE.MOD_CS_PLUS_2026) {
 				ObjectMapper mapper = new ObjectMapper();
 
 				for (int i = 0; i < 1000; ++i) {
@@ -982,7 +982,7 @@ public class GameInfo {
 	
 	
 	public void saveNpcTbl() {
-		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
+		if (type == MOD_TYPE.MOD_CS_PLUS_2026) {
 			ObjectMapper mapper = new ObjectMapper();
 
 			for (int i = 0; i < masterEntityList.size(); ++i) {
@@ -1491,7 +1491,7 @@ public class GameInfo {
 	}
 
 	private void fillMapdata(File f) throws IOException {
-		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
+		if (type == MOD_TYPE.MOD_CS_PLUS_2026) {
 			ObjectMapper mapper = new ObjectMapper();
 
 			for (int i = 0; ; ++i) {
@@ -1577,7 +1577,7 @@ public class GameInfo {
 		Mapdata dat = mapdataStore.get(map);
 		if (!dat.isModified())
 			return; //short-circuit
-		if (type == MOD_TYPE.MOD_CS_PLUS_2024) {
+		if (type == MOD_TYPE.MOD_CS_PLUS_2026) {
 			Path path = Paths.get(getSplitStageTablePath(map));
 
 			ObjectMapper mapper = new ObjectMapper();

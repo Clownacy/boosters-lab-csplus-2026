@@ -1248,7 +1248,7 @@ public class EditorApp extends JFrame implements ActionListener {
 							}
 						}
 						break;
-					case MOD_CS_PLUS_2024:
+					case MOD_CS_PLUS_2026:
 					case MOD_KS:
 						if (saveAll(false)) {
 							exeData.execute();

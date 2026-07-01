@@ -149,7 +149,7 @@ public class BlConfig {
 		} else if (type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2011) {
 			tileSize = 32;
 			entityResolution = 32;
-		} else if (type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2024) {
+		} else if (type == GameInfo.MOD_TYPE.MOD_CS_PLUS_2026) {
 			// Double resolution // TODO: Arbitrary resolutions
 			tileSize = 32;
 			entityResolution = 32;
