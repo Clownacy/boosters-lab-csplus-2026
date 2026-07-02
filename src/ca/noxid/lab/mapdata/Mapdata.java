@@ -162,13 +162,13 @@ public class Mapdata implements Changeable {
 	}
 	public int getBoss() {return bossNum;}
 
-	private String lighting = "Disabled";
-	public void setLighting(String n) {
-		if (n != lighting) {
+	private String lighting;
+	public void setLighting(String s) {
+		if (!lighting.equals(s) && s != null) {
 			markChanged();
 			String old = lighting;
-			lighting = n;
-			this.firePropertyChange(P_LIGHTING, old, n);
+			lighting = s;
+			this.firePropertyChange(P_LIGHTING, old, s);
 		}
 	}
 	public String getLighting() {return lighting;}
