@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import com.carrotlord.string.StrTools;
+
 /*
 typedef struct {
 	   char tileset[32];
@@ -37,7 +38,8 @@ public class Mapdata implements Changeable {
 	public static final String P_BOSS = "boss type"; //$NON-NLS-1$
 	public static final String P_LIGHTING = "lighting"; //$NON-NLS-1$
 	public static final String P_NUM = "map num"; //$NON-NLS-1$
-	
+	public static final String P_CAMERA = "camera"; //$NON-NLS-1$
+
 	/*
 	public static final String FORMAT_CEMAP = "cemap";
 	public static final String FORMAT_KS = "kingstory";
@@ -109,7 +111,7 @@ public class Mapdata implements Changeable {
 		}
 	}
 	public String getNPC2() {return npcSet2;}
-	
+
 	private String mapName;
 	public void setMapname(String s) {
 		if (!mapName.equals(s) && s != null) {
@@ -120,6 +122,16 @@ public class Mapdata implements Changeable {
 		}
 	}
 	public String getMapname() {return mapName;}
+
+	private String camera;
+	public void setCamera(String s) {
+		if (!camera.equals(s) && s != null) {
+			String old = camera;
+			camera = s;
+			this.firePropertyChange(P_CAMERA, old, s);
+		}
+	}
+	public String getCamera() {return camera;}
 	
 	private byte[] jpName;
 	public void setJpName(byte[] b){
@@ -174,7 +186,7 @@ public class Mapdata implements Changeable {
 	
 	private boolean changed = false;
 
-	public Mapdata(int num, String tilesetName, String fileName, int scrollType, String bgName, String bgWaterName, String npcSet1, String npcSet2, int bossNum, String lighting, byte[] jpName, String mapName) {
+	public Mapdata(int num, String tilesetName, String fileName, int scrollType, String bgName, String bgWaterName, String npcSet1, String npcSet2, int bossNum, String lighting, byte[] jpName, String mapName, String camera) {
 		mapNum = num;
 		this.tilesetName = tilesetName;
 		this.fileName = fileName;
@@ -187,6 +199,7 @@ public class Mapdata implements Changeable {
 		this.lighting = lighting;
 		this.jpName = jpName;
 		this.mapName = mapName;
+		this.camera = camera;
 	}
 
 	public Mapdata(int num, ByteBuffer buf, MOD_TYPE format, String charEncoding) {
@@ -293,6 +306,7 @@ public class Mapdata implements Changeable {
 		mapName = Messages.getString("Mapdata.0");		 //$NON-NLS-1$
 		mapNum = num;
 		jpName = new byte[0x20];
+		camera = "normal";
 	}
 
 	public ByteBuffer toBuf(MOD_TYPE format, String charEncoding) throws UnsupportedEncodingException {
@@ -421,6 +435,7 @@ public class Mapdata implements Changeable {
 		nd.npcSet2 = this.npcSet2;
 		nd.scrollType = this.scrollType;
 		nd.tilesetName = this.tilesetName;
+		nd.camera = this.camera;
 		
 		String mn = this.fileName;
 		String nstr = "0"; //$NON-NLS-1$

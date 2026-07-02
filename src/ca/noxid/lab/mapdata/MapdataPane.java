@@ -31,6 +31,7 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 	private JComboBox<String> bgType;
 	private JComboBox<String> bossType;
 	private JComboBox<String> lightingList;
+	private JComboBox<String> cameraList;
 
 	private boolean shouldWarn;
 	private boolean changed;
@@ -64,6 +65,11 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 		Messages.getString("MapdataPane.36"), //$NON-NLS-1$
 		Messages.getString("MapdataPane.37"), //$NON-NLS-1$
 		Messages.getString("MapdataPane.38"), //$NON-NLS-1$
+	};
+
+	private static final String[] cameraTypes = {
+		Messages.getString("MapdataPane.40"), //$NON-NLS-1$
+		Messages.getString("MapdataPane.41"), //$NON-NLS-1$
 	};
 	
 	public Mapdata getMapdata() {return dat;}
@@ -147,6 +153,17 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 				break;
 		}
 		lightingList.addActionListener(this);
+		cameraList = new JComboBox<>(cameraTypes);
+		switch (dat.getCamera())
+		{
+			case "normal":
+				cameraList.setSelectedIndex(0);
+				break;
+			case "vertical only":
+				cameraList.setSelectedIndex(1);
+				break;
+		}
+		cameraList.addActionListener(this);
 
 		c.setLayout(new GridLayout(0, 2));
 		c.add(new JLabel(Messages.getString("MapdataPane.21"))); //$NON-NLS-1$
@@ -171,6 +188,8 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 		c.add(bossType);
 		c.add(new JLabel(Messages.getString("MapdataPane.35"))); //$NON-NLS-1$
 		c.add(lightingList);
+		c.add(new JLabel(Messages.getString("MapdataPane.39"))); //$NON-NLS-1$
+		c.add(cameraList);
 	}
 	
 	public boolean allFieldsCommitted() {
@@ -245,6 +264,17 @@ public class MapdataPane extends BgPanel implements ActionListener, Changeable {
 						break;
 				};
 				//this.firePropertyChange(P_BOSS, null, combo.getSelectedIndex());
+			} else if (combo == cameraList) {
+				switch (combo.getSelectedIndex())
+				{
+					case 0:
+						dat.setCamera("normal");
+						break;
+					case 1:
+						dat.setLighting("vertical only");
+						break;
+				};
+				//this.firePropertyChange(P_CAMERA, null, combo.getSelectedIndex());
 			}
 		}
 	}

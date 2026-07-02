@@ -1504,7 +1504,7 @@ public class GameInfo {
 						break;
 
 					JsonNode stage = mapper.readTree(file);
-					mapdataStore.add(new Mapdata(i, stage.get("parts").asText(), stage.get("map").asText(), stage.get("bkType").asInt(), stage.get("back").asText(), stage.get("back_water").asText(), stage.get("npc").asText(), stage.get("boss").asText(), stage.get("boss_no").asInt(), stage.get("lighting").asText(), new byte[0x20], stage.get("name").asText()));
+					mapdataStore.add(new Mapdata(i, stage.get("parts").asText(), stage.get("map").asText(), stage.get("bkType").asInt(), stage.get("back").asText(), stage.get("back_water").asText(), stage.get("npc").asText(), stage.get("boss").asText(), stage.get("boss_no").asInt(), stage.get("lighting").asText(), new byte[0x20], stage.get("name").asText(), !stage.has("camera") ? "normal" : stage.get("camera").asText()));
 				} catch (IOException e) {
 					break;
 				}
@@ -1595,6 +1595,7 @@ public class GameInfo {
 			rootNode.put("boss_no", mapdata.getBoss()); //$NON-NLS-1$
 			rootNode.put("lighting", mapdata.getLighting()); //$NON-NLS-1$
 			rootNode.put("name", mapdata.getMapname()); //$NON-NLS-1$
+			rootNode.put("camera", mapdata.getCamera()); //$NON-NLS-1$
 
 			String thing = path + "/Metadata.json"; //$NON-NLS-1$
 			File file = ResourceManager.checkBase(new File(thing));
