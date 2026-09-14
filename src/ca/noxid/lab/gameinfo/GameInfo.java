@@ -1504,7 +1504,7 @@ public class GameInfo {
 						break;
 
 					JsonNode stage = mapper.readTree(file);
-					mapdataStore.add(new Mapdata(i, stage.get("parts").asText(), stage.get("map").asText(), stage.get("bkType").asInt(), stage.get("back").asText(), stage.get("back_water").asText(), stage.get("npc").asText(), stage.get("boss").asText(), stage.get("boss_no").asInt(), !stage.has("lighting") ? "disabled" : stage.get("lighting").asText(), new byte[0x20], stage.get("name").asText(), !stage.has("camera") ? "normal" : stage.get("camera").asText()));
+					mapdataStore.add(new Mapdata(i, stage.get("parts").asText(), stage.get("map").asText(), stage.get("bkType").asInt(), stage.get("back").asText(), stage.get("back_water").asText(), stage.get("npc").asText(), stage.get("boss").asText(), stage.get("boss_no").asInt(), !stage.has("lighting") ? "disabled" : stage.get("lighting").asText(), new byte[0x20], !stage.has("name") ? "[Unnamed]" : stage.get("name").asText(), !stage.has("camera") ? "normal" : stage.get("camera").asText()));
 				} catch (IOException e) {
 					break;
 				}
