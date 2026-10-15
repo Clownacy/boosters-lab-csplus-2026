@@ -905,7 +905,7 @@ public class GameInfo {
 						lineScan.useDelimiter("\\t+"); //$NON-NLS-1$
 						int entityNum = lineScan.nextInt();
 						//retrieve entity
-						if (entityNum > masterEntityList.size()) {
+						if (entityNum >= masterEntityList.size()) {
 							continue; //ignore invalid IDs
 						}
 						EntityData e = masterEntityList.get(entityNum);
